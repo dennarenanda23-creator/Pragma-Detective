@@ -1,0 +1,1724 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pragma Detective - Cyber Forensics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Grotesk:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --obsidian: #0B0E14;
+            --slate-grey: #1E232D;
+            --cyber-cyan: #00F0FF;
+            --warning-red: #FF3B30;
+            --neon-green: #00FF66;
+        }
+
+        /* Ambient Background with Noise Texture */
+        body { 
+            font-family: 'Space Grotesk', sans-serif; 
+            background: radial-gradient(circle at 50% 10%, #1a2235, var(--obsidian));
+            color: #E2E8F0; 
+            overflow-x: hidden; 
+        }
+        
+        .bg-noise {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            position: fixed; inset: 0; z-index: -1; pointer-events: none;
+        }
+        
+        .font-mono-cyber { font-family: 'Share Tech Mono', monospace; }
+
+        /* CRT & Scanline Effects */
+        .crt::before {
+            content: " "; display: block; position: fixed; inset: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 100; background-size: 100% 2px, 3px 100%; pointer-events: none;
+        }
+
+        /* Glassmorphism & Depth (Premium Game Look) */
+        .glass-panel {
+            background: rgba(18, 22, 31, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(0, 0, 0, 0.8);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(0, 240, 255, 0.03);
+            background-image: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 100%);
+        }
+
+        .btn-3d {
+            transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.1s ease;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.9), 0 10px 20px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.2);
+            transform: translateY(0);
+        }
+        .btn-3d:active {
+            transform: translateY(6px);
+            box-shadow: 0 0px 0 rgba(0,0,0,0.9), 0 2px 5px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.1);
+        }
+
+        /* Realistic Smartphone Bezel */
+        .phone-bezel {
+            background: #000;
+            border-radius: 3rem;
+            border: 8px solid #1a1c23;
+            box-shadow: 
+                inset 0 0 15px rgba(0,0,0,1), 
+                0 25px 60px rgba(0,0,0,0.95),
+                0 0 0 2px rgba(255,255,255,0.08),
+                -5px 0 15px rgba(0, 240, 255, 0.1);
+            position: relative;
+        }
+        /* Camera Notch */
+        .phone-bezel::before {
+            content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+            width: 90px; height: 25px; background: #0a0c10; border-radius: 20px; z-index: 60;
+            box-shadow: inset 0 -2px 5px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.8);
+        }
+        /* Screen Glare */
+        .phone-bezel::after {
+            content: ''; position: absolute; top: 0; left: -50%; width: 200%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0) 100%);
+            transform: rotate(30deg); pointer-events: none; z-index: 50;
+        }
+
+        /* Refined Neon UI */
+        .neon-text-cyan { text-shadow: 0 0 8px rgba(0,240,255,0.6); color: var(--cyber-cyan); }
+        .neon-border-cyan { border: 1px solid var(--cyber-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.2) inset, 0 0 15px rgba(0, 240, 255, 0.2); }
+        .neon-border-red { border: 1px solid var(--warning-red); box-shadow: 0 0 15px rgba(255, 59, 48, 0.2) inset, 0 0 15px rgba(255, 59, 48, 0.2); }
+        .neon-border-green { border: 1px solid var(--neon-green); box-shadow: 0 0 15px rgba(0, 255, 102, 0.2) inset, 0 0 15px rgba(0, 255, 102, 0.2); }
+
+        .carbon-grid {
+            background-color: var(--slate-grey);
+            background-image: linear-gradient(45deg, #0a0c10 25%, transparent 25%, transparent 75%, #0a0c10 75%, #0a0c10), linear-gradient(45deg, #0a0c10 25%, transparent 25%, transparent 75%, #0a0c10 75%, #0a0c10);
+            background-size: 20px 20px; background-position: 0 0, 10px 10px;
+        }
+
+        .slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scanline { 0% { transform: translateY(-100%); } 100% { transform: translateY(100vh); } }
+        @keyframes shakePhone { 0%, 100% { transform: translateX(0); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); } 20%, 40%, 60%, 80% { transform: translateX(6px); } }
+
+        .animate-shake { animation: shakePhone 0.4s cubic-bezier(.36,.07,.19,.97) infinite; box-shadow: 0 0 40px rgba(255,0,0,0.6); border-color: red !important; }
+
+        /* Phone Screen Scanline */
+        .phone-screen-scanline {
+            position: absolute; top: 0; left: 0; right: 0; height: 10px; background: rgba(0, 240, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.5); z-index: 40; pointer-events: none;
+            animation: scanline 4s linear infinite; opacity: 0.5;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.6); }
+
+    </style>
+</head>
+<body class="antialiased flex flex-col min-h-screen crt relative selection:bg-cyan-900 selection:text-cyan-100">
+    <div class="bg-noise"></div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed top-5 right-5 z-[300] flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- AUDIO ELEMENT & BUTTON -->
+    <button onclick="toggleAudio()" class="fixed top-5 right-5 z-[300] glass-panel p-3 rounded-full border border-cyan-500/50 hover:bg-cyan-900/50 transition-colors btn-3d shadow-lg mt-16 mr-2">
+        <span id="audio-icon" class="text-xl">🔈</span>
+    </button>
+    <audio id="bg-music" loop>
+        <!-- Mengganti BGM ke tema Investigasi/Seram (Dark Ambient Suspense) -->
+        <source src="https://ia800109.us.archive.org/21/items/KevinMacLeod-GatheringDarkness/Gathering%20Darkness.mp3" type="audio/mpeg">
+    </audio>
+    <!-- ALARM SOUND -->
+    <audio id="alarm-sound" loop>
+        <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+    </audio>
+    <!-- NEW AUDIO ASSETS -->
+    <audio id="phone-ring-sound" loop>
+        <source src="https://assets.mixkit.co/active_storage/sfx/1359/1359-preview.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="witness-voice-sound">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2144/2144-preview.mp3" type="audio/mpeg">
+    </audio>
+    <!-- SFX KUIS BENAR/SALAH -->
+    <audio id="sfx-correct">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-wrong">
+        <!-- Suara Terompet Salah (Tet-Tot) -->
+        <source src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="radar-sound" loop>
+        <source src="https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="walkie-talkie-beep">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2972/2972-preview.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="walkie-talkie-static" loop volume="0.2">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2558/2558-preview.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- MAIN MENU SCREEN -->
+    <div id="main-menu-screen" class="fixed inset-0 z-[250] flex flex-col items-center justify-center p-4 fade-in">
+        <h1 class="text-5xl md:text-7xl font-bold font-mono-cyber neon-text-cyan text-center mb-2 drop-shadow-2xl">PRAGMA</h1>
+        <h2 class="text-2xl md:text-3xl font-bold font-mono-cyber text-slate-300 tracking-[0.3em] mb-12 drop-shadow-lg">DETECTIVE</h2>
+
+        <div class="flex flex-col gap-5 w-full max-w-xs">
+            <button onclick="showCasesMenu()" class="glass-panel w-full btn-3d text-cyan-400 font-bold font-mono-cyber px-8 py-4 border border-cyan-500/50 hover:bg-cyan-900/60 hover:text-white transition-all uppercase tracking-widest text-lg rounded-lg">KASUS</button>
+            <button onclick="openProfileModal()" class="glass-panel w-full btn-3d text-slate-400 font-bold font-mono-cyber px-8 py-3 hover:border-cyan-400 hover:text-cyan-400 transition-all uppercase tracking-widest text-sm rounded-lg">PROFIL</button>
+        </div>
+    </div>
+
+    <!-- PROFILE MODAL -->
+    <div id="profile-modal-screen" class="hidden fixed inset-0 z-[260] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel p-6 rounded-2xl w-full max-w-3xl slide-up border border-slate-700 flex flex-col md:flex-row gap-6">
+            
+            <!-- ID Badge (Pojok Kiri) -->
+            <div class="w-full md:w-1/2 border border-cyan-900 bg-[#0a0c10] p-5 rounded-xl flex flex-col items-center relative overflow-hidden shadow-lg">
+                <div class="absolute inset-0 bg-gradient-to-b from-cyan-900/20 to-transparent pointer-events-none"></div>
+                <div class="text-[8px] text-cyan-500 font-mono-cyber absolute top-3 left-3">ID: PRG-77X9</div>
+                <div class="text-[8px] text-cyan-500 font-mono-cyber absolute top-3 right-3">CYBER DIV.</div>
+                
+                <!-- Foto Profil -->
+                <div class="w-24 h-24 bg-cyan-950 border-2 border-cyan-400 rounded-lg mb-3 mt-4 flex items-center justify-center text-5xl shadow-[0_0_20px_rgba(0,240,255,0.4)] z-10 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIi8+PC9zdmc+')] opacity-50 mix-blend-overlay"></div>
+                    🕵️
+                </div>
+                
+                <h3 class="text-xl font-bold font-mono-cyber text-cyan-400 z-10 text-center uppercase tracking-widest bg-cyan-900/30 px-4 py-1 rounded" id="id-badge-username">GUEST</h3>
+                <p class="text-xs text-slate-300 font-mono-cyber z-10 mt-2 mb-5 border-b border-cyan-900/50 pb-3 w-full text-center">Tingkat: <span class="text-white font-bold" id="id-badge-level">ANALIS JUNIOR</span></p>
+
+                <!-- Rak Lencana Bercahaya -->
+                <div class="w-full z-10 flex flex-col gap-3">
+                    <div class="text-[10px] text-cyan-500 text-center font-mono-cyber mb-1 tracking-widest">> RAK LENCANA</div>
+                    
+                    <!-- Lencana 1: Detektif Literasi (Perunggu) -->
+                    <div class="flex items-center gap-3 bg-amber-900/20 p-2 rounded-lg border border-amber-700/50 shadow-[0_0_15px_rgba(184,115,51,0.2)]">
+                        <span class="text-3xl drop-shadow-[0_0_10px_rgba(184,115,51,1)]">📖</span>
+                        <div class="flex flex-col"><span class="text-xs text-amber-500 font-bold font-mono-cyber">Detektif Literasi</span><span class="text-[9px] text-slate-400 font-mono-cyber">Pemula - Buku Bersimpul Siber</span></div>
+                    </div>
+                    
+                    <!-- Lencana 2: Master Detektif (Perak) - Awalnya terkunci -->
+                    <div id="badge-silver" class="flex items-center gap-3 bg-slate-600/20 p-2 rounded-lg border border-slate-400/50 shadow-[0_0_15px_rgba(192,192,192,0.2)] opacity-30 grayscale transition-all">
+                        <span class="text-3xl drop-shadow-[0_0_10px_rgba(192,192,192,1)]">🔍</span>
+                        <div class="flex flex-col"><span class="text-xs text-slate-200 font-bold font-mono-cyber">Master Detektif</span><span class="text-[9px] text-slate-400 font-mono-cyber">Menengah - Lensa Sinyal Radio</span></div>
+                    </div>
+                    
+                    <!-- Lencana 3: Suhu Pragmatik (Emas) - Awalnya terkunci -->
+                    <div id="badge-gold" class="flex items-center gap-3 bg-yellow-600/20 p-2 rounded-lg border border-yellow-500/50 shadow-[0_0_15px_rgba(255,215,0,0.2)] opacity-30 grayscale transition-all">
+                        <span class="text-3xl drop-shadow-[0_0_15px_rgba(255,215,0,1)] relative">
+                            🛡️<span class="absolute inset-0 bg-yellow-400 rounded-full blur-md opacity-40 mix-blend-screen animate-pulse"></span>
+                        </span>
+                        <div class="flex flex-col"><span class="text-xs text-yellow-400 font-bold font-mono-cyber">Suhu Pragmatik</span><span class="text-[9px] text-slate-400 font-mono-cyber">Ahli - Perisai Kristal Neon</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bagian Kanan (Edit Nama) -->
+            <div class="w-full md:w-1/2 flex flex-col gap-4 justify-center py-4">
+                <h2 class="text-xl font-bold font-mono-cyber text-white mb-2 uppercase border-b border-slate-700 pb-2">>_ CONFIG_USER</h2>
+                <label class="text-xs text-slate-400 font-mono-cyber uppercase">Alias Detektif:</label>
+                <input type="text" id="username-input" placeholder="Masukkan Nama..." class="w-full bg-[#0a0c10] border border-cyan-900 text-cyan-400 p-3 rounded font-mono-cyber focus:border-cyan-400 outline-none uppercase shadow-inner">
+                
+                <div class="flex gap-3 mt-4">
+                    <button onclick="saveProfile()" class="flex-1 bg-cyan-900/50 text-cyan-400 border border-cyan-500 p-3 rounded hover:bg-cyan-700 hover:text-white btn-3d font-mono-cyber font-bold">SIMPAN</button>
+                    <button onclick="closeProfileModal()" class="flex-1 bg-slate-800 text-slate-300 p-3 rounded btn-3d font-mono-cyber hover:bg-slate-700">BATAL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CASES MENU -->
+    <div id="cases-menu-screen" class="hidden fixed inset-0 z-[240] flex flex-col p-6 md:p-12 overflow-y-auto bg-black/90 fade-in">
+        <div class="flex justify-between items-center border-b border-cyan-900/50 mb-8 pb-4">
+            <h2 class="text-2xl md:text-3xl font-bold font-mono-cyber text-white uppercase drop-shadow-md">>_ DATABASE KASUS</h2>
+            <button onclick="document.getElementById('cases-menu-screen').classList.add('hidden'); document.getElementById('main-menu-screen').classList.remove('hidden');" class="text-slate-400 hover:text-cyan-400 font-mono-cyber flex items-center gap-2">
+                <span>[X]</span> KEMBALI
+            </button>
+        </div>
+        <div id="cases-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 max-w-7xl mx-auto w-full pb-20">
+            <!-- Injected via JS -->
+        </div>
+    </div>
+
+    <!-- Mode Selection -->
+    <div id="mode-selection-screen" class="hidden fixed inset-0 z-[260] bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-panel p-8 rounded-2xl w-full max-w-lg text-center slide-up border border-slate-700 relative overflow-hidden">
+            <!-- Detective PNG/SVG Asset -->
+            <div class="mb-6 mx-auto w-32 h-32 bg-cyan-900/20 rounded-full border-2 border-cyan-500/50 flex items-center justify-center shadow-[0_0_30px_rgba(0,240,255,0.2)]">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-16 h-16 text-cyan-400 drop-shadow-[0_0_8px_rgba(0,240,255,0.8)]">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 9.75L12 12m0 0l2.25 2.25M12 12l2.25-2.25M12 12L9.75 14.25" opacity="0.3"/>
+                </svg>
+            </div>
+            
+            <h2 class="text-2xl font-bold font-mono-cyber text-white mb-6">>_ PILIH MODE INVESTIGASI</h2>
+            <div class="flex flex-col md:flex-row gap-4">
+                <button onclick="enterSoloGame()" class="flex-1 glass-panel btn-3d p-6 hover:border-cyan-400 border border-slate-700 rounded-xl group relative overflow-hidden">
+                    <div class="absolute inset-0 bg-cyan-900/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="text-5xl mb-3 group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(0,240,255,0.5)]">👤</div>
+                    <div class="font-bold text-white tracking-wider font-mono-cyber">SOLO MODE</div>
+                    <div class="text-[10px] text-slate-400 mt-2 font-mono-cyber">Target: 5 Bukti<br>Tanpa Ruang Diskusi</div>
+                </button>
+                <button onclick="openRoomModal()" class="flex-1 glass-panel btn-3d p-6 hover:border-green-400 border border-slate-700 rounded-xl group relative overflow-hidden">
+                    <div class="absolute inset-0 bg-green-900/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="text-5xl mb-3 group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(0,255,102,0.5)]">👥</div>
+                    <div class="font-bold text-white tracking-wider font-mono-cyber">TOGETHER</div>
+                    <div class="text-[10px] text-slate-400 mt-2 font-mono-cyber">Max 3 Pemain<br>Target: 7 Bukti</div>
+                </button>
+            </div>
+            <button onclick="document.getElementById('mode-selection-screen').classList.add('hidden'); document.getElementById('cases-menu-screen').classList.remove('hidden')" class="mt-8 text-slate-500 hover:text-white text-xs font-mono-cyber uppercase tracking-widest transition-colors">[ Batal & Kembali ]</button>
+        </div>
+    </div>
+
+    <!-- Room Input Modal -->
+    <div id="room-modal" class="hidden fixed inset-0 z-[270] bg-black/95 flex items-center justify-center p-4">
+        <div class="glass-panel p-6 rounded-xl w-full max-w-sm slide-up border border-green-900">
+            <h3 class="font-bold text-green-400 mb-4 font-mono-cyber">>_ JOIN SECURE ROOM</h3>
+            <input type="text" placeholder="Masukkan Kode Room (ex: 7712)..." class="w-full bg-[#0a0c10] border border-slate-700 text-white p-3 rounded mb-4 font-mono-cyber focus:border-green-500 outline-none text-center tracking-widest shadow-inner">
+            <div class="flex gap-2">
+                <button onclick="enterTogetherGame()" class="flex-1 bg-green-900/50 text-green-400 border border-green-500 p-3 rounded hover:bg-green-700 hover:text-white btn-3d font-mono-cyber font-bold tracking-widest">JOIN</button>
+                <button onclick="closeRoomModal()" class="flex-1 bg-slate-800 text-white p-3 rounded btn-3d font-mono-cyber hover:bg-slate-700">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN GAME UI -->
+    <main id="game-main-ui" class="hidden flex-grow max-w-[1400px] mx-auto w-full p-4 flex flex-col lg:flex-row gap-6 relative z-10 h-screen overflow-hidden pt-12 fade-in">
+        
+        <!-- EXIT CASE BUTTON (TOP RIGHT) -->
+        <button onclick="confirmExit()" class="absolute top-4 right-4 z-[150] bg-gradient-to-b from-red-800 to-red-950 border-t border-t-red-400 border-x border-x-red-900 border-b border-b-black text-white rounded-xl px-5 py-3 transition-all flex items-center gap-3 group btn-3d">
+            <div class="relative w-6 h-6 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-300 absolute" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v14h8V7m-4-4v4m0 0L8 7m4-4l4 4" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white absolute group-hover:translate-x-1 group-hover:text-red-200 transition-all drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M17 16l4-4m0 0l-4-4m4 4H7" />
+                </svg>
+            </div>
+            <span class="text-xs font-bold font-mono-cyber uppercase tracking-widest text-red-100 drop-shadow-md">EXIT / KELUAR</span>
+        </button>
+
+        <!-- Left Column: Smartphone OS -->
+        <section class="w-full lg:w-4/12 flex justify-center h-full relative z-10">
+            <!-- Tambahkan id="phone-container" untuk efek getar -->
+            <div id="phone-container" class="phone-bezel w-full max-w-md h-full max-h-[800px] flex flex-col overflow-hidden bg-[#0a0c10] relative transition-all">
+                <div class="phone-screen-scanline"></div>
+                
+                <!-- Status Bar -->
+                <div class="bg-black/90 backdrop-blur-sm text-slate-300 px-6 py-2 flex justify-between items-center text-[10px] font-mono-cyber z-20 relative">
+                    <span>TELKOMSEL 4G</span>
+                    <div class="w-20"></div><!-- Notch space -->
+                    <div class="flex items-center gap-2">
+                        <span id="phone-time">14:03</span>
+                        <span>🔋 82%</span>
+                    </div>
+                </div>
+
+                <!-- Chat Tabs -->
+                <div class="flex bg-[#12161F] border-b border-slate-800 z-20 font-mono-cyber text-xs" id="chat-tabs-container">
+                    <button onclick="switchTab('chat')" id="tab-chat" class="flex-1 py-3 text-cyan-400 border-b-2 border-cyan-400 bg-cyan-900/10 font-bold transition-all w-full">TARGET_CHAT</button>
+                    <button onclick="switchTab('team')" id="team-tab-btn" class="flex-1 py-3 text-slate-500 hover:text-slate-300 transition-all hidden">TEAM_COMMS</button>
+                </div>
+
+                <!-- Chat Area (Target) -->
+                <div id="chat-simulator" class="flex-grow p-4 overflow-y-auto flex flex-col gap-3 relative z-10 bg-[#0B0E14] scroll-smooth">
+                    <!-- Chat injected via JS -->
+                </div>
+
+                <!-- Team Discussion Area (Hidden by default) -->
+                <div id="team-discussion" class="hidden flex-grow flex-col relative z-10 bg-[#0B0E14] overflow-hidden">
+                    <!-- Header for Call -->
+                    <div class="bg-[#12161F] border-b border-slate-800 p-3 flex justify-between items-center z-10">
+                        <span class="text-[10px] text-green-400 font-mono-cyber tracking-widest font-bold">👥 TEAM_COMMS</span>
+                        <div class="flex gap-2">
+                            <button id="btn-speaker" onclick="toggleSpeaker()" class="text-xs bg-cyan-900/50 p-1.5 rounded border border-cyan-500 hover:bg-slate-700 transition-colors" title="Mute/Unmute Radio Tim">🔊</button>
+                            <button onclick="toggleTeamCall()" id="btn-team-call" class="text-[10px] font-mono-cyber font-bold bg-slate-800 border border-slate-600 px-3 py-1.5 rounded hover:bg-slate-700 text-white flex items-center gap-2 transition-colors shadow-sm btn-3d">
+                                <span>📞</span> JOIN CALL
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat Logs -->
+                    <div id="team-chat-logs" class="flex-grow p-4 overflow-y-auto flex flex-col gap-3 scroll-smooth">
+                        <div class="text-center text-[10px] text-slate-500 font-mono-cyber my-2">-- SECURE CHANNEL ESTABLISHED --</div>
+                        <div class="self-end bg-slate-800 p-2 rounded-xl rounded-tr-none text-xs text-slate-200 max-w-[80%] border border-slate-700 shadow-md">Bro, chat yang ketiga itu deiksis palsu nggak sih?</div>
+                        <div class="self-start bg-green-900/30 p-2 rounded-xl rounded-tl-none text-xs text-green-100 max-w-[80%] border border-green-800 shadow-md">Iya, penggunaan kata "kami" dari instansi resmi biasanya formal, ini mencurigakan. Coba tandai sebagai tipuan.</div>
+                    </div>
+
+                    <!-- Input area -->
+                    <div class="p-3 border-t border-slate-800 bg-[#0a0c10] flex gap-2 z-10">
+                        <input type="text" id="team-chat-input" placeholder="Ketik pesan tim..." class="w-full bg-[#1a1c23] border border-slate-700 text-slate-300 text-xs px-3 py-2 rounded focus:outline-none focus:border-green-500 font-mono-cyber" onkeypress="if(event.key === 'Enter') sendTeamMessage()">
+                        <button onclick="sendTeamMessage()" class="bg-green-900/50 border border-green-700 text-green-400 px-3 py-1 rounded hover:bg-green-700 hover:text-white transition-colors font-bold btn-3d">→</button>
+                    </div>
+                </div>
+
+                <!-- Analysis Actions Drawer -->
+                <div id="analysis-panel" class="hidden absolute bottom-14 left-0 right-0 bg-slate-900/95 backdrop-blur-xl p-4 border-t border-cyan-500/50 slide-up z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.9)] rounded-t-2xl">
+                    <div class="text-center text-xs text-cyan-300 font-mono-cyber mb-3 tracking-widest uppercase">Analisis Anomali Linguistik</div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="submitAnalysis('uncertainty')" class="bg-gradient-to-b from-green-800 to-green-950 border border-green-500 text-green-100 text-[10px] p-2 rounded hover:brightness-125 btn-3d font-bold">HEDGING<br>(Ragu)</button>
+                        <button onclick="submitAnalysis('deceptive')" class="bg-gradient-to-b from-red-800 to-red-950 border border-red-500 text-red-100 text-[10px] p-2 rounded hover:brightness-125 btn-3d font-bold">TIPUAN<br>(Deiksis)</button>
+                        <button onclick="submitAnalysis('neutral')" class="bg-gradient-to-b from-slate-700 to-slate-800 border border-slate-500 text-slate-200 text-[10px] p-2 rounded hover:brightness-125 btn-3d font-bold">NETRAL<br>(Aman)</button>
+                    </div>
+                </div>
+
+                <!-- Keyboard Input Dummy -->
+                <div class="bg-[#12161F]/95 backdrop-blur-md p-3 border-t border-white/5 flex gap-2 items-center z-20 shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
+                    <div class="flex-grow bg-[#0B0E14] h-10 rounded-full flex items-center border border-slate-700/50 shadow-inner overflow-hidden px-3">
+                        <input type="text" id="phone-input" placeholder="Sistem disadap. Read-only." class="w-full bg-transparent text-slate-500 px-2 text-xs font-mono-cyber focus:outline-none" disabled autocomplete="off">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Column: Cyber Deck -->
+        <section class="w-full lg:w-8/12 flex flex-col gap-5 h-full overflow-y-auto pb-10 px-2 relative z-10">
+            <!-- Header Dashboard -->
+            <div class="glass-panel rounded-2xl p-5 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-cyan-900/50">
+                <div class="flex items-center gap-4 w-full md:w-auto">
+                    <div class="w-14 h-14 rounded-full bg-cyan-950 border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,240,255,0.4)] flex items-center justify-center font-bold text-xl text-cyan-400 font-mono-cyber shrink-0 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIi8+PC9zdmc+')] opacity-50 mix-blend-overlay"></div>
+                        <span id="display-avatar">PD</span>
+                    </div>
+                    <div>
+                        <div id="display-username" class="font-bold text-white tracking-widest font-mono-cyber text-lg uppercase">USER: GUEST</div>
+                        <div class="text-xs text-cyan-500 font-mono-cyber">Pangkat: Analis Forensik Junior</div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-6 w-full md:w-auto justify-between md:justify-end">
+                    <!-- Energy Stat -->
+                    <div class="flex flex-col gap-1 w-24">
+                        <div class="text-[10px] text-slate-400 font-mono-cyber flex justify-between"><span>ENERGI</span> <span id="energy-text" class="text-amber-400">5/5</span></div>
+                        <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-600">
+                            <div id="energy-bar" class="h-full bg-gradient-to-r from-amber-600 to-amber-400 transition-all duration-300" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <!-- Clue Stat -->
+                    <div class="flex flex-col gap-1 w-24">
+                        <div class="text-[10px] text-slate-400 font-mono-cyber flex justify-between"><span>BUKTI</span> <span class="text-cyan-400"><span id="clues-display">0</span>/<span id="target-clue-display">5</span></span></div>
+                        <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-600 relative">
+                            <div id="clue-progress-bar" class="h-full bg-gradient-to-r from-cyan-600 to-cyan-400 transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Briefing -->
+            <div class="glass-panel border-l-4 border-l-cyan-500 rounded-r-2xl p-6 relative overflow-hidden shadow-lg">
+                <div class="absolute top-0 right-0 opacity-[0.03] text-9xl -mt-8 -mr-4 pointer-events-none">📂</div>
+                <div class="flex justify-between items-start mb-4 relative z-10">
+                    <div>
+                        <div class="text-[10px] font-mono-cyber text-cyan-400 mb-1 tracking-widest">> STATUS: ACTIVE_INVESTIGATION</div>
+                        <h2 class="text-xl md:text-2xl font-bold text-white uppercase drop-shadow-md" id="active-case-title">Modus Undian Palsu</h2>
+                        <div class="text-xs text-slate-400 font-mono-cyber mt-1 bg-slate-900/50 inline-block px-2 py-1 rounded">Fokus: Analisis Deiksis & Implikatur Tipuan</div>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-300 leading-relaxed font-mono-cyber border-t border-slate-700/50 pt-3 relative z-10">
+                    Korban melaporkan kehilangan akses rekening setelah berinteraksi dengan pesan dari nomor tidak dikenal. 
+                    <span class="text-cyan-300 font-bold">Misi Anda:</span> Ekstrak minimal <span id="mission-target" class="text-white bg-cyan-900/50 px-1 rounded">5</span> bukti linguistik dari log obrolan pelaku di perangkat kiri untuk mendapatkan surat perintah penangkapan.
+                </p>
+            </div>
+
+            <!-- Grid Apps -->
+            <div class="grid grid-cols-2 gap-5 flex-grow">
+                <!-- Baris 1: Peta & Saksi -->
+                <button onclick="openMap()" class="col-span-1 glass-panel btn-3d rounded-2xl p-5 hover:border-green-500/50 flex flex-col items-center justify-center gap-2 group border border-slate-700 relative overflow-hidden text-center">
+                    <div class="absolute inset-0 bg-green-900/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="text-4xl group-hover:scale-110 neon-text-green transition-transform drop-shadow-[0_0_10px_rgba(0,255,102,0.5)] z-10">🗺️</div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-widest drop-shadow-md z-10">Peta Lacak</h3>
+                </button>
+
+                <button onclick="openWitness()" class="col-span-1 glass-panel btn-3d rounded-2xl p-5 hover:border-purple-500/50 flex flex-col items-center justify-center gap-2 group border border-slate-700 relative overflow-hidden text-center">
+                    <div class="absolute inset-0 bg-purple-900/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="text-4xl group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(168,85,247,0.5)] z-10">📞</div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-widest drop-shadow-md z-10">Hubungi Saksi</h3>
+                </button>
+
+                <!-- Baris 2: Bukti & Jurnal -->
+                <button onclick="openEvidenceBoard()" class="col-span-1 glass-panel btn-3d rounded-2xl p-5 hover:border-cyan-500/50 flex flex-col items-center justify-center gap-3 group border border-slate-700">
+                    <div class="text-4xl group-hover:scale-110 neon-text-cyan transition-transform drop-shadow-[0_0_10px_rgba(0,240,255,0.5)]">🕸️</div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-widest text-center">Papan Bukti</h3>
+                    <div class="text-slate-400 text-[10px] text-center font-mono-cyber bg-black/50 py-1 px-3 rounded-full border border-slate-700"><span id="board-clue-count" class="text-cyan-400 font-bold">0</span> Terangkai</div>
+                </button>
+
+                <button onclick="openDebriefing()" class="col-span-1 glass-panel btn-3d rounded-2xl p-5 hover:border-blue-500/50 flex flex-col items-center justify-center gap-3 group border border-slate-700">
+                    <div class="text-4xl group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(59,130,246,0.5)] text-blue-400">📁</div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-widest text-center">Jurnal Materi</h3>
+                    <div class="text-blue-300/70 text-[9px] font-mono-cyber uppercase border border-blue-900/50 bg-blue-900/20 px-2 py-1 rounded">Isi Energi</div>
+                </button>
+
+                <!-- Baris 3: Duel & Flashcard -->
+                <button onclick="openDuel()" class="col-span-1 glass-panel btn-3d rounded-2xl p-5 hover:border-red-500/50 flex flex-col items-center justify-center gap-3 group border border-slate-700 relative">
+                    <div class="absolute top-2 right-2 bg-red-900/80 text-red-100 text-[10px] font-mono-cyber px-2 rounded-full border border-red-500"><span id="quiz-progress-btn">0/10</span></div>
+                    <div class="text-4xl group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(255,59,48,0.5)] mt-2">⚔️</div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-widest text-center">Duel Kuis</h3>
+                </button>
+
+                <button onclick="openFlashcard()" class="col-span-1 glass-panel btn-3d rounded-2xl p-5 hover:border-amber-500/50 flex flex-col items-center justify-center gap-3 group border border-slate-700 relative">
+                    <div class="absolute top-2 right-2 bg-amber-900/80 text-amber-100 text-[10px] font-mono-cyber px-2 rounded-full border border-amber-500"><span id="flashcard-progress-btn">0/5</span></div>
+                    <div class="text-4xl group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(245,158,11,0.5)] mt-2">🎴</div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-widest text-center">Flashcard Voice</h3>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- AI CHATBOT -->
+    <div class="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-4 pointer-events-none">
+        <div id="chat-window" class="hidden w-80 h-[400px] glass-panel border border-cyan-500/50 rounded-xl flex-col overflow-hidden slide-up shadow-[0_10px_40px_rgba(0,240,255,0.15)] pointer-events-auto">
+            <div class="bg-[#003344] border-b border-cyan-700 p-3 flex justify-between items-center shadow-md">
+                <h3 class="font-bold text-cyan-400 font-mono-cyber text-sm flex items-center gap-2">
+                    <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span></span>
+                    AI ASISTEN: PROF-PRAGMA
+                </h3>
+                <button onclick="document.getElementById('chat-window').classList.add('hidden')" class="text-cyan-500 hover:text-white font-bold text-lg leading-none">×</button>
+            </div>
+            <div id="ai-chat-logs" class="flex-grow p-4 overflow-y-auto font-mono-cyber text-xs flex flex-col gap-3 bg-[#0a0c10]/90">
+                <div class="bg-cyan-900/40 border border-cyan-800/80 p-3 rounded-lg text-cyan-100 shadow-inner">
+                    Sistem Analisis Linguistik Siap. Pilih pesan pelaku di HP, lalu ketik "petunjuk" jika Anda bingung membedakan antara Hedging (keraguan) atau Deiksis Palsu (tipuan).
+                </div>
+            </div>
+            <div class="p-3 border-t border-cyan-800/80 bg-[#0B0E14] flex gap-2">
+                <input type="text" id="ai-input" placeholder="Minta petunjuk..." class="bg-[#1a1c23] border border-cyan-900 text-white w-full text-xs rounded outline-none px-3 py-2 font-mono-cyber focus:border-cyan-500 transition-colors" onkeypress="if(event.key === 'Enter') sendAIMessage()">
+                <button onclick="sendAIMessage()" class="bg-cyan-900/80 border border-cyan-500 text-cyan-100 px-3 py-2 rounded text-xs font-bold hover:bg-cyan-700 transition-colors btn-3d">SEND</button>
+            </div>
+        </div>
+        <button onclick="document.getElementById('chat-window').classList.remove('hidden')" class="btn-3d bg-[#003344] border-2 border-cyan-500 text-cyan-400 p-4 rounded-full shadow-[0_0_20px_rgba(0,240,255,0.4)] hover:bg-cyan-900 hover:text-white transition-all group pointer-events-auto">
+            <span class="group-hover:scale-110 inline-block transition-transform text-2xl">💡</span>
+        </button>
+    </div>
+
+    <!-- === MODALS === -->
+    
+    <!-- Confirm Exit Modal -->
+    <div id="exit-modal" class="hidden fixed inset-0 z-[400] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 fade-in">
+        <div class="glass-panel p-8 rounded-xl max-w-sm w-full text-center border border-red-900 shadow-[0_0_50px_rgba(255,0,0,0.2)] slide-up">
+            <div class="text-5xl mb-4">⚠️</div>
+            <h3 class="text-xl font-bold text-red-500 font-mono-cyber mb-2">HENTIKAN INVESTIGASI?</h3>
+            <p class="text-slate-300 text-sm font-mono-cyber mb-8">Semua progres dan bukti yang dikumpulkan pada kasus ini akan direset.</p>
+            <div class="flex gap-4">
+                <button onclick="executeExit()" class="flex-1 bg-red-900/50 border border-red-500 text-red-200 p-3 rounded font-mono-cyber font-bold hover:bg-red-700 btn-3d">YA, KELUAR</button>
+                <button onclick="closeConfirmExit()" class="flex-1 bg-slate-800 text-white p-3 rounded font-mono-cyber hover:bg-slate-700 btn-3d">BATAL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Win Modal -->
+    <div id="win-modal" class="hidden fixed inset-0 z-[400] bg-cyan-950/90 backdrop-blur-md flex items-center justify-center p-4 fade-in">
+        <div class="glass-panel p-8 rounded-2xl max-w-lg w-full text-center border-2 border-cyan-400 shadow-[0_0_60px_rgba(0,240,255,0.4)] slide-up">
+            <div class="text-6xl mb-6 drop-shadow-[0_0_15px_rgba(0,255,102,0.8)]">🚔</div>
+            <h3 class="text-3xl font-bold text-green-400 font-mono-cyber mb-2 uppercase tracking-widest">KASUS DIPECAHKAN</h3>
+            <p class="text-cyan-100 text-sm font-mono-cyber mb-6">Bukti linguistik telah cukup untuk menerbitkan surat penangkapan. Pelaku cyber fraud berhasil diamankan berkat analisis Anda!</p>
+            
+            <div class="bg-black/50 border border-cyan-800 p-4 rounded-lg mb-8 text-left inline-block w-full">
+                <div class="text-xs text-slate-400 font-mono-cyber mb-1">RINGKASAN BUKTI:</div>
+                <div class="text-cyan-300 font-mono-cyber font-bold">Total Bukti: <span id="win-clue-count">5</span></div>
+                <div class="text-cyan-300 font-mono-cyber font-bold">Akurasi Analisis: 100%</div>
+            </div>
+
+            <button onclick="returnToMenu()" class="w-full bg-cyan-600 text-white p-4 rounded-xl font-mono-cyber font-bold uppercase tracking-widest hover:bg-cyan-500 btn-3d shadow-[0_0_20px_rgba(0,240,255,0.5)]">KEMBALI KE MARKAS</button>
+        </div>
+    </div>
+
+    <!-- Map Modal -->
+    <div id="map-modal" class="hidden fixed inset-0 z-[300] bg-black/95 flex items-center justify-center p-4 fade-in">
+        <div class="glass-panel w-full max-w-4xl h-[600px] flex flex-col md:flex-row rounded-xl overflow-hidden slide-up border border-green-900/50">
+            <!-- Peta Visual -->
+            <div class="flex-grow bg-[#0B0E14] relative carbon-grid flex items-center justify-center overflow-hidden h-64 md:h-full">
+                <!-- Radar scanning effect -->
+                <div class="absolute inset-0 bg-[conic-gradient(from_0deg,transparent_0deg,transparent_270deg,rgba(0,255,102,0.1)_360deg)] rounded-full w-[200%] h-[200%] top-[-50%] left-[-50%] animate-[spin_4s_linear_infinite] origin-center pointer-events-none"></div>
+                
+                <!-- Target Rings -->
+                <div class="absolute w-96 h-96 border border-green-500/10 rounded-full"></div>
+                <div class="absolute w-64 h-64 border border-green-500/30 rounded-full"></div>
+                
+                <!-- Pings -->
+                <div class="absolute w-12 h-12 border border-green-400 rounded-full animate-ping opacity-20"></div>
+                
+                <div class="text-center z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <div class="text-5xl mb-2 drop-shadow-[0_0_15px_rgba(0,255,102,0.8)]">📍</div>
+                </div>
+                
+                <!-- Visited location markers on map -->
+                <div id="map-markers-container" class="absolute inset-0">
+                    <!-- Marker diinjeksi via JS agar dinamis -->
+                </div>
+            </div>
+
+            <!-- Panel Informasi Lokasi -->
+            <div class="w-full md:w-80 bg-[#0a0c10] border-l border-green-900/50 flex flex-col">
+                <div class="p-4 border-b border-green-900/50 flex justify-between items-center shadow-md">
+                    <h3 class="font-bold text-green-400 font-mono-cyber flex items-center gap-3">
+                        <span class="animate-pulse h-3 w-3 bg-green-500 rounded-full inline-block"></span>
+                        TRACKER V2.1
+                    </h3>
+                    <button onclick="closeMap()" class="text-slate-400 hover:text-red-500 font-bold text-xl leading-none">×</button>
+                </div>
+                
+                <div class="p-5 flex-grow overflow-y-auto">
+                    <div class="bg-black/50 text-green-400 text-xs p-3 border border-green-500/50 rounded font-mono-cyber shadow-lg mb-6">
+                        Sinyal Penipu Berpindah...<br>
+                        Koordinat: <span id="map-coords-text">-6.2088, 106.8456</span><br>
+                        <span class="text-[10px] text-green-600 mt-1 block">Menganalisis IP Route...</span>
+                    </div>
+
+                    <h4 class="text-xs font-bold text-slate-300 font-mono-cyber mb-3 border-b border-slate-700 pb-2">RIWAYAT LOKASI (24 JAM):</h4>
+                    <ul id="map-history-list" class="space-y-3 font-mono-cyber text-[10px]">
+                        <!-- Riwayat Lokasi diinjeksi via JS agar dinamis -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Witness Modal -->
+    <div id="witness-modal" class="hidden fixed inset-0 z-[300] bg-black/95 flex items-center justify-center p-4 fade-in">
+        <div class="glass-panel w-full max-w-2xl rounded-xl overflow-hidden slide-up border border-purple-900/50">
+            <div class="p-4 border-b border-purple-900/50 bg-[#0a0c10] flex justify-between items-center shadow-md">
+                <h3 class="font-bold text-purple-400 font-mono-cyber text-lg flex items-center gap-3">
+                    📞 HUBUNGI SAKSI KORBAN
+                </h3>
+                <button onclick="closeWitness()" class="text-slate-400 hover:text-red-500 font-bold text-xl leading-none">×</button>
+            </div>
+            
+            <div id="witness-container" class="p-6 bg-[#0B0E14] grid md:grid-cols-2 gap-6">
+                <!-- Saksi Diinjeksi Secara Dinamis Melalui JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Evidence Board Modal -->
+    <div id="evidence-modal" class="hidden fixed inset-0 z-[300] bg-black/95 flex flex-col items-center justify-center p-4 fade-in">
+        <div class="w-full max-w-5xl h-[85vh] glass-panel rounded-xl overflow-hidden slide-up flex flex-col relative border border-cyan-900">
+            <div class="p-5 border-b border-cyan-900 bg-[#0a0c10] flex justify-between items-center z-20 shadow-md">
+                <h3 class="font-bold text-cyan-400 font-mono-cyber text-lg">🕸️ CYBER EVIDENCE BOARD</h3>
+                <button onclick="closeEvidenceBoard()" class="bg-red-900/50 text-red-200 border border-red-500/50 hover:bg-red-700 hover:text-white font-mono-cyber font-bold px-6 py-2 rounded btn-3d text-sm">TUTUP</button>
+            </div>
+            <div class="flex-grow carbon-grid relative p-8 overflow-y-auto">
+                <!-- Benang Merah SVG Background -->
+                <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-60 z-0" id="red-thread-canvas"></svg>
+                
+                <div id="evidence-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 relative z-10">
+                    <!-- Bukti diinjeksi via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jurnal Materi (Debriefing) Modal -->
+    <div id="jurnal-modal" class="hidden fixed inset-0 z-[300] bg-black/95 flex flex-col items-center justify-center p-4 fade-in">
+        <div class="w-full max-w-3xl h-[75vh] glass-panel rounded-xl overflow-hidden slide-up flex flex-col border border-blue-900">
+            <div class="p-5 border-b border-blue-900 bg-[#0a0c10] flex justify-between items-center shadow-md">
+                <h3 class="font-bold text-blue-400 font-mono-cyber text-lg">📁 JURNAL LINGUISTIK FORENSIK</h3>
+                <button onclick="closeDebriefing()" class="text-slate-400 hover:text-red-500 font-bold text-xl leading-none">×</button>
+            </div>
+            <div class="flex-grow bg-[#0B0E14] p-6 md:p-10 overflow-y-auto text-slate-300 font-mono-cyber leading-relaxed">
+                <h4 class="text-xl text-white font-bold mb-4 border-b border-slate-700 pb-2">Teori Pragmatik dalam Penipuan Cyber</h4>
+                
+                <div class="space-y-6">
+                    <div>
+                        <h5 class="text-blue-300 font-bold text-lg mb-2">1. Hedging (Penanda Keraguan)</h5>
+                        <p class="text-sm">Hedging adalah strategi linguistik untuk mengurangi kepastian atau komitmen terhadap suatu pernyataan. Penipu sering menggunakannya agar tidak terdengar terlalu memaksa di awal, atau untuk menghindari tanggung jawab absolut.</p>
+                        <p class="text-sm mt-2 bg-blue-900/20 p-3 rounded border border-blue-900/50"><span class="text-blue-400 font-bold">Contoh kata:</span> "sepertinya", "kemungkinan besar", "biasanya", "mungkin".</p>
+                    </div>
+
+                    <div>
+                        <h5 class="text-red-300 font-bold text-lg mb-2">2. Deiksis Sosial Palsu</h5>
+                        <p class="text-sm">Deiksis merujuk pada kata yang maknanya bergantung pada konteks (siapa, kapan, di mana). Penipu sering menggunakan kata ganti yang salah atau berlebihan untuk membangun otoritas palsu.</p>
+                        <p class="text-sm mt-2 bg-red-900/20 p-3 rounded border border-red-900/50"><span class="text-red-400 font-bold">Contoh:</span> Menggunakan "Kami dari kepolisian" secara repetitif dan mendesak, padahal institusi resmi memiliki SOP bahasa baku.</p>
+                    </div>
+
+                    <div>
+                        <h5 class="text-cyan-300 font-bold text-lg mb-2">3. Implikatur Mendesak</h5>
+                        <p class="text-sm">Implikatur adalah makna terselubung. Penipu menciptakan kondisi "False Urgency" (keadaan darurat palsu) untuk mematikan rasionalitas korban.</p>
+                        <p class="text-sm mt-2 bg-cyan-900/20 p-3 rounded border border-cyan-900/50"><span class="text-cyan-400 font-bold">Contoh:</span> "Jika tidak diklik dalam 5 menit, rekening hangus." Makna tersiratnya: Jangan berpikir panjang, turuti perintah sekarang.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-5 border-t border-blue-900 bg-[#0a0c10] text-center">
+                <button onclick="rechargeEnergy()" class="bg-blue-600 text-white font-bold font-mono-cyber px-8 py-3 rounded-xl hover:bg-blue-500 btn-3d shadow-[0_0_15px_rgba(59,130,246,0.4)]">BACA & ISI ENERGI (+1)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Duel Kuis Modal -->
+    <div id="duel-modal" class="hidden fixed inset-0 z-[300] bg-black/95 flex flex-col items-center justify-center p-4 fade-in">
+        <div id="duel-modal-content" class="w-full max-w-md glass-panel rounded-xl overflow-hidden slide-up flex flex-col border border-red-900 text-center relative transition-all duration-100">
+            <!-- Feedback Overlay (Jawaban Benar/Salah) -->
+            <div id="duel-feedback" class="hidden absolute inset-0 z-50 flex-col items-center justify-center bg-black/95 backdrop-blur-sm transition-all rounded-xl">
+                <div id="duel-feedback-icon" class="text-7xl mb-4 drop-shadow-[0_0_20px_rgba(0,255,102,0.8)] animate-bounce">✅</div>
+                <div id="duel-feedback-text" class="text-3xl font-bold font-mono-cyber text-green-400 drop-shadow-md">BENAR!</div>
+            </div>
+
+            <div class="absolute top-2 left-3 text-red-500 text-xs font-mono-cyber bg-red-950 px-2 rounded">Kuis: <span id="quiz-progress-text">1/10</span></div>
+            <div class="p-4 border-b border-red-900 bg-red-950/30 pt-8">
+                <h3 class="font-bold text-red-500 font-mono-cyber text-lg flex items-center justify-center gap-2">
+                    ⚔️ DUEL PENGETAHUAN
+                </h3>
+            </div>
+            <div class="p-8">
+                <div class="text-4xl text-red-500 font-mono-cyber font-bold mb-6 border-2 border-red-500 p-3 rounded-full inline-block w-24 h-24 flex items-center justify-center mx-auto animate-pulse" id="duel-timer">60s</div>
+                
+                <p class="text-white font-mono-cyber mb-8 text-sm md:text-base h-16 flex items-center justify-center" id="duel-question">Loading question...</p>
+                
+                <div class="grid grid-cols-1 gap-3" id="duel-answers">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+            <div class="p-3 bg-[#0a0c10] border-t border-red-900/50">
+                <button onclick="closeDuel()" class="text-slate-500 hover:text-white text-xs font-mono-cyber uppercase underline">Menyerah & Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flashcard Modal -->
+    <div id="flashcard-modal" class="hidden fixed inset-0 z-[300] bg-black/95 flex flex-col items-center justify-center p-4 fade-in">
+        <div class="w-full max-w-2xl glass-panel rounded-xl p-8 slide-up text-center border-t-4 border-t-amber-500 relative overflow-hidden shadow-[0_10px_50px_rgba(245,158,11,0.15)]">
+            <!-- Feedback Overlay (Jawaban Benar) -->
+            <div id="flashcard-feedback" class="hidden absolute inset-0 z-50 flex-col items-center justify-center bg-black/95 backdrop-blur-md transition-all rounded-xl">
+                <div id="flashcard-feedback-icon" class="text-7xl mb-4 drop-shadow-[0_0_20px_rgba(0,255,102,0.8)] animate-bounce">✅</div>
+                <div id="flashcard-feedback-text" class="text-3xl font-bold font-mono-cyber text-green-400 drop-shadow-md tracking-widest">ANALISIS DITERIMA</div>
+            </div>
+
+            <div class="absolute inset-0 bg-gradient-to-b from-amber-900/10 to-transparent pointer-events-none"></div>
+            
+            <div class="flex justify-between items-center mb-6 border-b border-slate-700 pb-4 relative z-10">
+                <div class="text-amber-500 text-xs font-mono-cyber bg-amber-950 px-2 rounded">Kartu: <span id="flashcard-progress-text">1/5</span></div>
+                <h3 class="font-bold text-amber-500 font-mono-cyber text-xl">🎴 ANALISIS SUARA</h3>
+                <div class="text-amber-500 font-mono-cyber font-bold text-lg border border-amber-500 bg-amber-950/50 px-3 py-1 rounded-lg animate-pulse" id="flashcard-timer">80s</div>
+            </div>
+            
+            <div class="flex justify-center mb-8 relative z-10 w-full">
+                <div class="w-full bg-gradient-to-br from-[#1a1c23] to-[#0a0c10] p-8 rounded-xl border border-slate-700 shadow-2xl relative overflow-hidden group hover:border-amber-500/50 transition-colors">
+                    <div class="text-xs text-amber-500 font-mono-cyber mb-4 tracking-widest font-bold" id="flashcard-title">KARTU KASUS 1</div>
+                    <div class="text-white text-lg font-serif italic" id="flashcard-text">"Paket Anda tertahan di bea cukai. Klik link ini secepatnya untuk menebus, kalau tidak barang hangus."</div>
+                </div>
+            </div>
+
+            <p class="text-slate-400 font-mono-cyber mb-6 relative z-10 text-sm max-w-lg mx-auto">
+                Tahan tombol mikrofon di bawah dan sebutkan unsur pragmatik (seperti penanda urgensi/keraguan) yang ada di kalimat atas.
+            </p>
+            
+            <div class="relative z-10 mb-2">
+                <!-- Atribut event diubah untuk mencegah konflik klik -->
+                <button id="mic-btn" onmousedown="startMicRecording()" onmouseup="stopMicRecording()" onmouseleave="stopMicRecording()" ontouchstart="startMicRecording()" ontouchend="stopMicRecording()" class="mx-auto w-72 bg-[#1a1c23] border-2 border-amber-500 text-amber-500 py-5 rounded-full font-bold btn-3d flex items-center justify-center gap-3 transition-all hover:bg-amber-900/30 shadow-[0_0_30px_rgba(245,158,11,0.2)] select-none">
+                    <span class="text-2xl">🎙️</span> TAHAN UNTUK BICARA
+                </button>
+                <div id="mic-status" class="mt-4 text-sm font-mono-cyber text-transparent h-5 transition-colors">Merekam... Analisis Suara Aktif</div>
+            </div>
+            
+            <button onclick="closeFlashcard()" class="absolute top-4 right-4 text-slate-500 hover:text-red-500 font-mono-cyber text-2xl z-20">×</button>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        // --- DATABASE & STATE ---
+        const casesDB = Array.from({length: 20}, (_, i) => ({
+            id: i + 1,
+            title: ["Phishing APK Kurir", "Modus Salah Transfer", "Romance Scam", "Lowongan Kerja Palsu", "Undian Palsu"][i % 5] + " " + (i + 1),
+            topic: "Deiksis & Implikatur Tipuan"
+        }));
+
+        let state = {
+            username: 'GUEST',
+            energy: 5,
+            maxEnergy: 5,
+            cluesFound: 0,
+            totalClues: 5,
+            gameMode: 'solo', // 'solo' or 'together'
+            activeMessageId: null,
+            evidence: [],
+            caseSolved: false,
+            isAudioPlaying: false,
+            micActive: false,
+            teamCallActive: false,
+            speakerActive: true,
+            quizIndex: 0,
+            flashcardIndex: 0,
+            witness1Interviewed: false,
+            witness2Interviewed: false,
+            unlockedCaseLevel: 1,
+            activeCaseId: 1
+        };
+
+        // Media Recorder Variables
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let audioPlayback = null;
+
+        const quizDB = [
+            { q: "Kata 'sepertinya' dan 'kemungkinan' merupakan penanda linguistik dari...", options: ["Deiksis Person", "Hedging (Keraguan)", "Implikatur Percakapan", "Maksim Kuantitas"], answer: 1 },
+            { q: "Teknik 'False Urgency' (Mendesak) bertujuan untuk...", options: ["Mematikan rasionalitas", "Memberi informasi detail", "Sopan santun", "Mematuhi hukum"], answer: 0 },
+            { q: "Penggunaan 'Kami dari kepolisian' oleh penipu disebut...", options: ["Maksim Kualitas", "Hedging", "Deiksis Sosial Palsu", "Kalimat Deklaratif"], answer: 2 },
+            { q: "Implikatur dalam penipuan sering berupa...", options: ["Fakta yang jelas", "Ancaman terselubung", "Salam hangat", "Data numerik"], answer: 1 },
+            { q: "Jika ada frasa 'Klik link ini dalam 5 menit', itu termasuk...", options: ["Deiksis Waktu", "Hedging", "Keraguan", "Sapaan"], answer: 0 },
+            { q: "Maksim Kualitas dilanggar penipu ketika mereka...", options: ["Bicara terlalu panjang", "Memberikan informasi palsu", "Bergumam", "Menjawab tidak nyambung"], answer: 1 },
+            { q: "Deiksis Persona digunakan untuk...", options: ["Menunjuk waktu", "Menunjuk tempat", "Merujuk orang/pelaku", "Menyatakan keraguan"], answer: 2 },
+            { q: "Frasa 'Mungkin rekening anda diblokir' mengandung makna...", options: ["Pasti diblokir", "Sedang diproses", "Intimidasi + Hedging", "Pemberitahuan resmi"], answer: 2 },
+            { q: "Strategi penipu untuk tampil berwibawa adalah menggunakan...", options: ["Bahasa gaul", "Register instansi/formal", "Singkatan", "Emoji tertawa"], answer: 1 },
+            { q: "Tujuan utama Pragmatik Forensik adalah...", options: ["Menangkap pelaku langsung", "Menganalisis niat di balik teks", "Melacak IP address", "Mengembalikan uang korban"], answer: 1 }
+        ];
+
+        // Skrip Flashcard
+        const flashcardDB = [
+            { title: "KARTU KASUS 1", text: "Paket Anda tertahan di bea cukai. Klik link ini secepatnya untuk menebus, kalau tidak barang hangus." },
+            { title: "KARTU KASUS 2", text: "Halo, kami dari pihak Kepolisian Siber mendeteksi anomali pada rekening Anda. Transfer segera untuk pengamanan." },
+            { title: "KARTU KASUS 3", text: "Selamat, nomor WA Anda mendapatkan hadiah Rp 100 Juta. Pajak pemenang mohon ditransfer lebih dulu." },
+            { title: "KARTU KASUS 4", text: "Sepertinya akun M-Banking anda sedang diakses orang lain dari luar kota. Mohon konfirmasi PIN anda." },
+            { title: "KARTU KASUS 5", text: "Lowongan kerja paruh waktu! Cukup like produk dapat Rp 500rb per hari. Gabung grup telegram sekarang." }
+        ];
+
+        // --- CORE GAME DATA & FUNCTIONS ---
+        let chatScript = [
+            { id: 'm1', text: "Selamat siang! Nomor Anda terpilih memenangkan undian Rp50 Juta.", type: 'neutral', analyzed: false, highlightWords: [] },
+            { id: 'm2', text: "Pencairan dana sepertinya akan diproses hari ini juga.", type: 'uncertainty', analyzed: false, highlightWords: ['sepertinya'] },
+            { id: 'm3', text: "Kami dari pihak bank meminta Anda mengeklik tautan ini dalam 5 menit.", type: 'deceptive', analyzed: false, highlightWords: ['Kami dari pihak bank', 'dalam 5 menit'] },
+            { id: 'm4', text: "Jika tidak, rekening Anda kemungkinan besar diblokir selamanya.", type: 'uncertainty', analyzed: false, highlightWords: ['kemungkinan besar'] }
+        ];
+
+        // --- TEXT TO SPEECH UTILITY ---
+        function speakText(text, pitch = 1, rate = 1, callback = null) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Hentikan suara sebelumnya jika ada
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'id-ID'; // Menggunakan Bahasa Indonesia
+                
+                // Coba paksakan penggunaan suara lokal jika tersedia di browser
+                const voices = window.speechSynthesis.getVoices();
+                const idVoice = voices.find(v => v.lang === 'id-ID' || v.lang === 'id_ID');
+                if(idVoice) utterance.voice = idVoice;
+
+                utterance.pitch = pitch;
+                utterance.rate = rate;
+                if(callback) utterance.onend = callback;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                // Fallback jika browser tidak mendukung
+                console.warn("Text-to-Speech tidak didukung oleh browser ini.");
+                if(callback) setTimeout(callback, 2000);
+            }
+        }
+
+        function toggleAudio() {
+            const audio = document.getElementById('bg-music');
+            const icon = document.getElementById('audio-icon');
+            
+            // Set volume BGM menjadi sangat pelan & halus (15% dari maksimal)
+            audio.volume = 0.15;
+            
+            if (state.isAudioPlaying) {
+                audio.pause();
+                icon.innerText = '🔈';
+                state.isAudioPlaying = false;
+            } else {
+                audio.play().catch(e => console.log("Autoplay dicegah oleh browser"));
+                icon.innerText = '🔊';
+                state.isAudioPlaying = true;
+            }
+        }
+
+        function showCasesMenu() {
+            document.getElementById('main-menu-screen').classList.add('hidden');
+            document.getElementById('cases-menu-screen').classList.remove('hidden');
+            const grid = document.getElementById('cases-grid');
+            
+            grid.innerHTML = casesDB.map(c => `
+                <div onclick="selectCase(${c.id}, '${c.title}')" class="glass-panel btn-3d p-5 flex flex-col items-center justify-center gap-4 h-36 ${state.unlockedCaseLevel >= c.id ? 'hover:border-cyan-400 cursor-pointer' : 'opacity-50 grayscale cursor-not-allowed border-red-900/50'} group relative overflow-hidden transition-all rounded-xl">
+                    ${state.unlockedCaseLevel >= c.id ? '<div class="absolute inset-0 bg-gradient-to-t from-cyan-900/30 to-transparent translate-y-full group-hover:translate-y-0 transition-transform"></div>' : '<div class="absolute inset-0 bg-red-900/10"></div><div class="absolute top-2 right-2 text-red-500 text-xl">🔒</div>'}
+                    <span class="text-4xl z-10 drop-shadow-md">📁</span>
+                    <span class="text-[10px] font-mono-cyber text-center w-full text-slate-300 uppercase z-10 leading-tight"><span class="text-cyan-400">#${c.id.toString().padStart(2, '0')}</span><br>${c.title}</span>
+                </div>
+            `).join('');
+        }
+
+        function selectCase(id, title) {
+            if(state.unlockedCaseLevel < id) {
+                showNotification("Selesaikan kasus sebelumnya untuk membuka level ini!", "error");
+                return;
+            }
+            state.activeCaseId = id;
+            selectedCaseTitle = title;
+            document.getElementById('cases-menu-screen').classList.add('hidden');
+            document.getElementById('mode-selection-screen').classList.remove('hidden');
+        }
+
+        function openProfileModal() { document.getElementById('profile-modal-screen').classList.remove('hidden'); }
+        function closeProfileModal() { document.getElementById('profile-modal-screen').classList.add('hidden'); }
+        function saveProfile() {
+            const name = document.getElementById('username-input').value || 'GUEST';
+            state.username = name.toUpperCase();
+            document.getElementById('display-username').innerText = `USER: ${state.username}`;
+            document.getElementById('display-avatar').innerText = state.username.substring(0, 2);
+            document.getElementById('id-badge-username').innerText = state.username;
+            closeProfileModal();
+            showNotification("Profil Diperbarui", "success");
+        }
+
+        function openRoomModal() { document.getElementById('room-modal').classList.remove('hidden'); }
+        function closeRoomModal() { document.getElementById('room-modal').classList.add('hidden'); }
+
+        function enterSoloGame() {
+            state.gameMode = 'solo';
+            state.totalClues = 5;
+            document.getElementById('target-clue-display').innerText = '5';
+            document.getElementById('mode-selection-screen').classList.add('hidden');
+            startGame();
+        }
+
+        function enterTogetherGame() {
+            state.gameMode = 'together';
+            state.totalClues = 7;
+            document.getElementById('target-clue-display').innerText = '7';
+            closeRoomModal();
+            document.getElementById('mode-selection-screen').classList.add('hidden');
+            startGame();
+        }
+
+        function confirmExit() { document.getElementById('exit-modal').classList.remove('hidden'); }
+        function closeConfirmExit() { document.getElementById('exit-modal').classList.add('hidden'); }
+        function executeExit() {
+            closeConfirmExit();
+            document.getElementById('game-main-ui').classList.add('hidden');
+            document.getElementById('cases-menu-screen').classList.remove('hidden');
+            showNotification("Investigasi Dihentikan", "warning");
+        }
+
+        function returnToMenu() {
+            document.getElementById('win-modal').classList.add('hidden');
+            document.getElementById('game-main-ui').classList.add('hidden');
+            showCasesMenu();
+        }
+
+        function openDebriefing() { document.getElementById('jurnal-modal').classList.remove('hidden'); }
+        function closeDebriefing() { document.getElementById('jurnal-modal').classList.add('hidden'); }
+        function rechargeEnergy() {
+            if(state.energy < state.maxEnergy) {
+                state.energy = Math.min(state.energy + 1, state.maxEnergy);
+                updateDashboard();
+                showNotification("Energi Terisi +1", "success");
+                closeDebriefing();
+            } else {
+                showNotification("Energi sudah penuh!", "warning");
+            }
+        }
+
+        function addClue(amount, id, text, type, reason) {
+            let oldClues = state.cluesFound;
+            state.cluesFound += amount;
+            state.evidence.push({ id, text, type, reason });
+            updateDashboard();
+            
+            // Trigger chat dari pelaku berdasarkan jumlah bukti yang ditemukan (berurutan)
+            for(let i = oldClues + 1; i <= state.cluesFound; i++) {
+                if(i <= 5 && !state.caseSolved) {
+                    setTimeout(() => { incomingChatEvent(i); }, (i - oldClues) * 1500 + 1000);
+                }
+            }
+        }
+
+        function renderChat() {
+            const container = document.getElementById('chat-simulator');
+            container.innerHTML = `<div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]"><span class="text-6xl font-mono-cyber transform -rotate-45 text-white">CONFIDENTIAL</span></div>`;
+            
+            chatScript.forEach(msg => {
+                let bg = "bg-gradient-to-br from-[#1A1F2B] to-[#12161F] border-[#2A2E35]";
+                let cursor = "cursor-pointer hover:border-cyan-500 hover:shadow-[0_0_15px_rgba(0,240,255,0.2)]";
+                let text = msg.text;
+                let status = "";
+                
+                if(msg.analyzed) {
+                    cursor = "cursor-default opacity-80";
+                    if(msg.type === 'uncertainty') { bg = "bg-gradient-to-br from-green-900/40 to-green-900/10 border-green-500/50"; status = "HEDGING TAGGED"; }
+                    if(msg.type === 'deceptive') { bg = "bg-gradient-to-br from-red-900/40 to-red-900/10 border-red-500/50"; status = "DECEPTIVE TAGGED"; }
+                    
+                    msg.highlightWords.forEach(w => {
+                        text = text.replace(new RegExp(`(${w})`, 'gi'), `<span class="font-bold underline text-white bg-white/10 px-1 rounded">$1</span>`);
+                    });
+                } else if (state.activeMessageId === msg.id && !msg.isVoice) {
+                    bg = "bg-gradient-to-br from-cyan-900/50 to-cyan-900/20 border-cyan-400 shadow-[0_0_20px_rgba(0,240,255,0.3)]";
+                }
+
+                // Render khusus untuk Voice Note
+                if(msg.isVoice) {
+                    cursor = "cursor-default";
+                    bg = "bg-gradient-to-br from-purple-900/40 to-purple-900/10 border-purple-500/50";
+                    text = `
+                        <div class="flex items-center gap-3 w-48">
+                            <button onclick="playVoiceNote('${msg.url}', this, '${msg.spokenText || msg.text}')" class="bg-cyan-900 w-10 h-10 rounded-full flex items-center justify-center border-2 border-cyan-500 hover:bg-cyan-700 shadow-[0_0_10px_rgba(0,240,255,0.4)] text-lg shrink-0 btn-3d pb-1 pl-1">▶</button>
+                            <div class="flex-grow h-3 bg-slate-800 rounded-full overflow-hidden flex items-center px-1 gap-1">
+                                <div class="w-1/4 h-1 bg-cyan-400 animate-pulse"></div>
+                                <div class="w-2/4 h-2 bg-cyan-400 animate-pulse delay-75"></div>
+                                <div class="w-1/4 h-1 bg-cyan-400 animate-pulse delay-150"></div>
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-bold">${msg.duration}</span>
+                        </div>
+                        <div class="text-[9px] text-purple-300 mt-2 italic">${msg.text}</div>
+                    `;
+                }
+                
+                container.innerHTML += `
+                    <div ${!msg.isVoice ? `onclick="selectMessage('${msg.id}')"` : ''} class="${bg} ${cursor} border p-3 rounded-2xl rounded-tl-none self-start max-w-[85%] text-slate-300 text-sm z-10 slide-up transition-all shadow-md mb-2">
+                        ${status ? `<div class="text-[9px] font-bold mb-1 ${msg.type==='uncertainty'?'text-green-400':'text-red-400'}">${status}</div>` : ''}
+                        ${text}
+                    </div>`;
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function playVoiceNote(url, btnElement, spokenText) {
+            btnElement.innerText = '⏸';
+            btnElement.classList.replace('pl-1', 'pl-0');
+            
+            // Menggunakan Text to Speech untuk Suara Pelaku
+            // EFEK PENJUAL BORAKS (Disensor/Anonim): Pitch Ditekan ke paling bawah (0.05) & Lebih lambat (0.6)
+            speakText(spokenText, 0.05, 0.6, () => {
+                btnElement.innerText = '▶'; 
+                btnElement.classList.replace('pl-0', 'pl-1');
+            });
+        }
+
+        function selectMessage(id) {
+            const msg = chatScript.find(m => m.id === id);
+            if(msg.analyzed) return;
+            
+            state.activeMessageId = id;
+            document.getElementById('analysis-panel').classList.remove('hidden');
+            renderChat();
+        }
+
+        function submitAnalysis(type) {
+            if(!state.activeMessageId) return;
+            const msg = chatScript.find(m => m.id === state.activeMessageId);
+            
+            if (msg.type === 'neutral') {
+                showNotification("Pesan ini netral. Tidak ada penanda anomali.", "warning");
+            } else if(msg.type === type) {
+                msg.analyzed = true;
+                addClue(1, msg.id, msg.text, msg.type === 'uncertainty' ? 'Hedging' : 'Tipuan / Deiksis Palsu', 'Teks diverifikasi memiliki anomali pragmatik.');
+                showNotification("Analisis Tepat! Bukti Diamankan.", "success");
+            } else {
+                showNotification("Analisis Keliru! Pelajari lagi konteks kalimatnya.", "error");
+            }
+            
+            state.activeMessageId = null;
+            document.getElementById('analysis-panel').classList.add('hidden');
+            renderChat();
+        }
+
+        // Reset state helper
+        function resetGameState() {
+            state.energy = 5;
+            state.cluesFound = 0;
+            state.evidence = [];
+            state.caseSolved = false;
+            state.activeMessageId = null;
+            state.quizIndex = 0;
+            state.flashcardIndex = 0;
+            state.witness1Interviewed = false;
+            state.witness2Interviewed = false;
+            
+            chatScript = [
+                { id: 'm1', text: "Selamat siang! Nomor Anda terpilih memenangkan undian Rp50 Juta.", type: 'neutral', analyzed: false, highlightWords: [] },
+                { id: 'm2', text: "Pencairan dana sepertinya akan diproses hari ini juga.", type: 'uncertainty', analyzed: false, highlightWords: ['sepertinya'] },
+                { id: 'm3', text: "Kami dari pihak bank meminta Anda mengeklik tautan ini dalam 5 menit.", type: 'deceptive', analyzed: false, highlightWords: ['Kami dari pihak bank', 'dalam 5 menit'] },
+                { id: 'm4', text: "Jika tidak, rekening Anda kemungkinan besar diblokir selamanya.", type: 'uncertainty', analyzed: false, highlightWords: ['kemungkinan besar'] }
+            ];
+
+            updateDashboard();
+            updateBadges();
+        }
+
+        function updateBadges() {
+            const silver = document.getElementById('badge-silver');
+            const gold = document.getElementById('badge-gold');
+            const badgeLevelText = document.getElementById('id-badge-level');
+            
+            // Logika Pembukaan Rak Lencana Berdasarkan Level Kasus
+            if(state.unlockedCaseLevel >= 3) {
+                silver.classList.remove('opacity-30', 'grayscale');
+                badgeLevelText.innerText = "MASTER DETEKTIF";
+            }
+            if(state.unlockedCaseLevel >= 6) {
+                gold.classList.remove('opacity-30', 'grayscale');
+                badgeLevelText.innerText = "SUHU PRAGMATIK";
+            }
+        }
+
+        function startGame() {
+            resetGameState();
+            document.getElementById('active-case-title').innerText = selectedCaseTitle;
+            document.getElementById('game-main-ui').classList.remove('hidden');
+            
+            const chatTabsContainer = document.getElementById('chat-tabs-container');
+            const chatTab = document.getElementById('tab-chat');
+            const teamTabBtn = document.getElementById('team-tab-btn');
+
+            if(state.gameMode === 'together') {
+                chatTabsContainer.classList.remove('hidden');
+                teamTabBtn.classList.remove('hidden');
+                chatTab.classList.remove('rounded-tr-xl', 'w-full'); 
+                switchTab('chat');
+            } else {
+                chatTabsContainer.classList.add('hidden');
+                switchTab('chat');
+            }
+            
+            renderChat();
+            updateDashboard();
+            showNotification("Sistem Forensik Online. Menganalisis log obrolan...", "success");
+        }
+
+        function incomingChatEvent(clueLevel) {
+            const alarm = document.getElementById('alarm-sound');
+            const phone = document.getElementById('phone-container');
+            
+            let newMsg = null;
+            // Antrian Pesan Berdasarkan Clue Level
+            if(clueLevel === 1) {
+                newMsg = { text: "Jangan coba-coba menghindar! Konfirmasi data Anda sekarang!", type: 'deceptive', analyzed: false, highlightWords: [] };
+            } else if(clueLevel === 2) {
+                // Voice Note Seram 1 (Ditambahkan spokenText untuk TTS)
+                newMsg = { isVoice: true, url: '#', duration: "0:04", text: "[Voice Note] - Peringatan terselubung", spokenText: "Kami memantau pergerakan anda. Jangan berani-berani memblokir nomor ini.", type: 'uncertainty', analyzed: false, highlightWords: [] };
+            } else if(clueLevel === 3) {
+                newMsg = { text: "Waktu Anda sisa 1 menit sebelum rekening dibekukan selamanya!", type: 'deceptive', analyzed: false, highlightWords: ['sisa 1 menit'] };
+            } else if(clueLevel === 4) {
+                // Voice Note Seram 2 (Ditambahkan spokenText untuk TTS)
+                newMsg = { isVoice: true, url: '#', duration: "0:06", text: "[Voice Note] - Intimidasi agresif", spokenText: "Transfer sekarang atau polisi akan menjemput anda paksa dalam waktu kurang dari 5 menit!", type: 'deceptive', analyzed: false, highlightWords: [] };
+            } else if(clueLevel >= 5) {
+                newMsg = { text: "Ini peringatan terakhir dari instansi pusat.", type: 'deceptive', analyzed: false, highlightWords: [] };
+            }
+            
+            if(!newMsg) return;
+            newMsg.id = `m${Date.now()}`;
+            chatScript.push(newMsg);
+            
+            // Efek Getar dan Suara Lonceng/Alarm (5 Detik)
+            phone.classList.add('animate-shake');
+            alarm.currentTime = 0;
+            alarm.play().catch(e => console.log("Audio play prevented"));
+            
+            renderChat();
+            showNotification("PESAN BARU DARI PELAKU MASUK!", "error");
+
+            setTimeout(() => {
+                phone.classList.remove('animate-shake');
+                alarm.pause();
+            }, 5000);
+        }
+
+        // --- DASHBOARD & TOOLS ---
+        function updateDashboard() {
+            // Update Energy
+            document.getElementById('energy-text').innerText = `${state.energy}/${state.maxEnergy}`;
+            document.getElementById('energy-bar').style.width = `${(state.energy/state.maxEnergy)*100}%`;
+            
+            // Update Clues
+            document.getElementById('clues-display').innerText = state.cluesFound;
+            document.getElementById('board-clue-count').innerText = state.cluesFound;
+            
+            const cluePercent = Math.min((state.cluesFound / state.totalClues) * 100, 100);
+            document.getElementById('clue-progress-bar').style.width = `${cluePercent}%`;
+            
+            // Update button progress counters
+            document.getElementById('quiz-progress-btn').innerText = `${state.quizIndex}/10`;
+            document.getElementById('flashcard-progress-btn').innerText = `${state.flashcardIndex}/5`;
+
+            // Cek Menang
+            if(state.cluesFound >= state.totalClues && !state.caseSolved) {
+                state.caseSolved = true;
+                
+                // Membuka kunci level kasus berikutnya
+                if(state.unlockedCaseLevel <= state.activeCaseId) {
+                    state.unlockedCaseLevel = state.activeCaseId + 1;
+                }
+
+                setTimeout(() => {
+                    document.getElementById('win-clue-count').innerText = state.cluesFound;
+                    document.getElementById('win-modal').classList.remove('hidden');
+                }, 1000);
+            }
+        }
+
+        function showNotification(msg, type="cyan") {
+            const toast = document.createElement('div');
+            const colorClass = type === 'success' ? 'border-green-500 text-green-100' : 
+                               (type === 'error' ? 'border-red-500 text-red-100' : 
+                               (type === 'warning' ? 'border-amber-500 text-amber-100' : 'border-cyan-500 text-cyan-100'));
+            const bgClass = type === 'success' ? 'bg-green-900/80' : 
+                            (type === 'error' ? 'bg-red-900/80' : 
+                            (type === 'warning' ? 'bg-amber-900/80' : 'bg-cyan-950/90'));
+                            
+            toast.className = `${bgClass} ${colorClass} border-l-4 p-3 rounded shadow-[0_5px_15px_rgba(0,0,0,0.5)] slide-up backdrop-blur-md font-mono-cyber text-xs uppercase tracking-wider flex items-center gap-2`;
+            
+            const icon = type === 'success' ? '✔️' : (type==='error' ? '❌' : (type==='warning' ? '⚠️' : 'ℹ️'));
+            toast.innerHTML = `<span>${icon}</span> <span>${msg}</span>`;
+            
+            document.getElementById('toast-container').appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function switchTab(tab) {
+            const chatTab = document.getElementById('tab-chat');
+            const teamTab = document.getElementById('team-tab-btn');
+            
+            if(tab === 'chat') {
+                document.getElementById('chat-simulator').classList.remove('hidden');
+                document.getElementById('team-discussion').classList.add('hidden');
+                
+                chatTab.className = "flex-1 py-3 text-cyan-400 border-b-2 border-cyan-400 bg-cyan-900/10 font-bold transition-all";
+                teamTab.className = "flex-1 py-3 text-slate-500 hover:text-slate-300 transition-all border-b border-transparent";
+            } else {
+                document.getElementById('chat-simulator').classList.add('hidden');
+                document.getElementById('team-discussion').classList.remove('hidden');
+                
+                teamTab.className = "flex-1 py-3 text-green-400 border-b-2 border-green-400 bg-green-900/10 font-bold transition-all";
+                chatTab.className = "flex-1 py-3 text-slate-500 hover:text-slate-300 transition-all border-b border-transparent";
+            }
+        }
+
+        // --- TEAM CHAT & CALL LOGIC ---
+        function toggleTeamCall() {
+            const btn = document.getElementById('btn-team-call');
+            const beep = document.getElementById('walkie-talkie-beep');
+            const stat = document.getElementById('walkie-talkie-static');
+            
+            state.teamCallActive = !state.teamCallActive;
+            beep.play().catch(e=>console.log(e)); // Mainkan beep radio
+            
+            if(state.teamCallActive) {
+                btn.innerHTML = `<span class="animate-pulse">🎙️</span> ON CALL`;
+                btn.classList.remove('bg-slate-800', 'border-slate-600', 'hover:bg-slate-700', 'text-white');
+                btn.classList.add('bg-green-900/50', 'border-green-500', 'text-green-400', 'hover:bg-green-800');
+                if(state.speakerActive) stat.play().catch(e=>console.log(e));
+                showNotification("Terhubung ke Saluran Suara Tim", "success");
+            } else {
+                btn.innerHTML = `<span>📞</span> JOIN CALL`;
+                btn.classList.remove('bg-green-900/50', 'border-green-500', 'text-green-400', 'hover:bg-green-800');
+                btn.classList.add('bg-slate-800', 'border-slate-600', 'hover:bg-slate-700', 'text-white');
+                stat.pause();
+                showNotification("Saluran Suara Tim Diakhiri", "warning");
+            }
+        }
+
+        function toggleSpeaker() {
+            const btn = document.getElementById('btn-speaker');
+            const stat = document.getElementById('walkie-talkie-static');
+            state.speakerActive = !state.speakerActive;
+            
+            if(state.speakerActive) {
+                btn.innerText = '🔊';
+                btn.classList.add('bg-cyan-900/50', 'border-cyan-500');
+                btn.classList.remove('bg-slate-800', 'border-slate-600');
+                if(state.teamCallActive) stat.play().catch(e=>console.log(e));
+            } else {
+                btn.innerText = '🔇';
+                btn.classList.remove('bg-cyan-900/50', 'border-cyan-500');
+                btn.classList.add('bg-slate-800', 'border-slate-600');
+                stat.pause();
+            }
+        }
+
+        function sendTeamMessage() {
+            const inp = document.getElementById('team-chat-input');
+            const msg = inp.value.trim();
+            if(!msg) return;
+            
+            const logs = document.getElementById('team-chat-logs');
+            logs.innerHTML += `<div class="self-end bg-slate-800 p-2 rounded-xl rounded-tr-none text-xs text-slate-200 max-w-[80%] border border-slate-700 shadow-md slide-up">${msg}</div>`;
+            inp.value = '';
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        // --- MODAL FUNCTIONS (APPS) ---
+        const locationPool = {
+            past1: ["Warnet X-Treme", "Cafe Cyber Elite", "Kost Mawar Biru", "Perpustakaan Kota", "Stasiun Pusat", "Game Center K1", "Terminal Bus", "Warkop Net"],
+            past2: ["Kedai Kopi Senja", "Taman Kota", "Minimarket 24J", "Halte Busway", "Warnet Lintas", "Foodcourt Mall", "Toko Elektronik", "Rest Area 44"],
+            current: ["Apartemen Tower B", "Hotel Singgah", "Rumah Susun Blok C", "Gudang Kosong", "Motel Melati", "Villa Terpencil", "Ruko Kosong Timur", "Kompleks Merpati"]
+        };
+
+        function openMap() { 
+            document.getElementById('map-modal').classList.remove('hidden'); 
+            document.getElementById('radar-sound').play().catch(e=>console.log(e));
+            
+            // Lokasi GPS Dinamis Berdasarkan ID Kasus
+            const idx = (state.activeCaseId - 1) % locationPool.current.length;
+            const loc1 = locationPool.past1[idx];
+            const loc2 = locationPool.past2[idx];
+            const loc3 = locationPool.current[idx];
+            
+            // Koordinat Dinamis
+            document.getElementById('map-coords-text').innerText = `-${6 + (state.activeCaseId % 3)}.${1000 + (state.activeCaseId * 412)}, 106.${8000 + (state.activeCaseId * 231)}`;
+            
+            // Posisi Marker Peta Dinamis
+            const top1 = 20 + ((state.activeCaseId * 17) % 60);
+            const left1 = 15 + ((state.activeCaseId * 23) % 70);
+            const top2 = 20 + ((state.activeCaseId * 31) % 60);
+            const left2 = 15 + ((state.activeCaseId * 37) % 70);
+
+            document.getElementById('map-markers-container').innerHTML = `
+                <div class="absolute text-xl opacity-50 hover:opacity-100 cursor-pointer group transition-all" style="top:${top1}%; left:${left1}%">
+                    🔴<span class="absolute bg-black text-[10px] text-red-400 p-1 rounded hidden group-hover:block w-32 z-50 shadow-lg border border-red-900">${loc1}</span>
+                </div>
+                <div class="absolute text-xl opacity-50 hover:opacity-100 cursor-pointer group transition-all" style="top:${top2}%; left:${left2}%">
+                    🔴<span class="absolute bg-black text-[10px] text-red-400 p-1 rounded hidden group-hover:block w-32 z-50 shadow-lg border border-red-900">${loc2}</span>
+                </div>
+            `;
+            
+            // Daftar History List Dinamis
+            document.getElementById('map-history-list').innerHTML = `
+                <li class="bg-slate-900/50 p-3 rounded border border-slate-800 flex items-start gap-3">
+                    <span class="text-red-500 text-lg">🔴</span>
+                    <div>
+                        <div class="text-white font-bold">${loc1}</div>
+                        <div class="text-slate-500 mt-1">IP Login: 192.168.${state.activeCaseId}.${Math.floor(Math.random()*100)} (Kemarin 14:00)</div>
+                    </div>
+                </li>
+                <li class="bg-slate-900/50 p-3 rounded border border-slate-800 flex items-start gap-3">
+                    <span class="text-red-500 text-lg">🔴</span>
+                    <div>
+                        <div class="text-white font-bold">${loc2}</div>
+                        <div class="text-slate-500 mt-1">Jejak Transaksi/Sinyal (Hari ini 09:30)</div>
+                    </div>
+                </li>
+                <li class="bg-green-900/20 p-3 rounded border border-green-900/50 flex items-start gap-3 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-green-500/10 animate-pulse"></div>
+                    <span class="text-green-500 text-lg relative z-10">📍</span>
+                    <div class="relative z-10">
+                        <div class="text-green-300 font-bold">${loc3} (Saat Ini)</div>
+                        <div class="text-green-600 mt-1">Sinyal Pelaku Aktif...</div>
+                    </div>
+                </li>
+            `;
+        }
+        function closeMap() { 
+            document.getElementById('map-modal').classList.add('hidden'); 
+            document.getElementById('radar-sound').pause();
+        }
+        
+        function openWitness() { 
+            document.getElementById('witness-modal').classList.remove('hidden'); 
+            renderWitnesses();
+        }
+        function closeWitness() { document.getElementById('witness-modal').classList.add('hidden'); }
+        
+        const witnessNamesList = ['Bpk. Budi', 'Ibu Siti', 'Sdr. Anton', 'Nn. Clara', 'Bpk. Joko', 'Ibu Rina', 'Sdr. Kevin', 'Nn. Maya', 'Bpk. Hendra', 'Ibu Diana'];
+
+        function renderWitnesses() {
+            const container = document.getElementById('witness-container');
+            
+            // Pemilihan nama secara deterministik berdasarkan urutan Kasus
+            const w1Name = witnessNamesList[(state.activeCaseId * 2) % witnessNamesList.length];
+            const w2Name = witnessNamesList[((state.activeCaseId * 2) + 1) % witnessNamesList.length];
+
+            container.innerHTML = `
+                <!-- Saksi 1 -->
+                <div class="bg-[#12161F] border border-slate-700 rounded-lg p-5 flex flex-col gap-4 relative">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-purple-900/50 rounded-full border border-purple-500 flex items-center justify-center text-xl">👤</div>
+                        <div>
+                            <div class="font-bold text-slate-200 text-sm font-mono-cyber">${w1Name} (Korban)</div>
+                            <div class="text-[10px] text-slate-500 font-mono-cyber">Kasus: ${selectedCaseTitle}</div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 font-mono-cyber flex-grow italic">"Dulu dia mengancam saya dengan kata 'Rekening akan disita negara'. Saya panik..."</p>
+                    <button id="btn-witness-1" onclick="interviewWitness(1)" class="w-full ${state.witness1Interviewed ? 'bg-slate-800 border-slate-600 text-slate-500 opacity-50 cursor-not-allowed' : 'bg-purple-900/40 border border-purple-500 text-purple-200 hover:bg-purple-700'} p-2 rounded text-xs font-mono-cyber font-bold btn-3d transition-colors" ${state.witness1Interviewed ? 'disabled' : ''}>
+                        ${state.witness1Interviewed ? 'SELESAI DIINTEROGASI' : 'INTEROGASI (+1 BUKTI)'}
+                    </button>
+                </div>
+
+                <!-- Saksi 2 -->
+                <div class="bg-[#12161F] border border-slate-700 rounded-lg p-5 flex flex-col gap-4 relative">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-purple-900/50 rounded-full border border-purple-500 flex items-center justify-center text-xl">👩</div>
+                        <div>
+                            <div class="font-bold text-slate-200 text-sm font-mono-cyber">${w2Name} (Korban)</div>
+                            <div class="text-[10px] text-slate-500 font-mono-cyber">Kasus: ${selectedCaseTitle}</div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 font-mono-cyber flex-grow italic">"Dia pakai kata 'Kami dari pihak instansi'. Padahal teleponnya pakai nomor biasa..."</p>
+                    <button id="btn-witness-2" onclick="interviewWitness(2)" class="w-full ${state.witness2Interviewed ? 'bg-slate-800 border-slate-600 text-slate-500 opacity-50 cursor-not-allowed' : 'bg-purple-900/40 border border-purple-500 text-purple-200 hover:bg-purple-700'} p-2 rounded text-xs font-mono-cyber font-bold btn-3d transition-colors" ${state.witness2Interviewed ? 'disabled' : ''}>
+                        ${state.witness2Interviewed ? 'SELESAI DIINTEROGASI' : 'INTEROGASI (+1 BUKTI)'}
+                    </button>
+                </div>
+            `;
+        }
+
+        function interviewWitness(id) {
+            if(id === 1 && state.witness1Interviewed) return;
+            if(id === 2 && state.witness2Interviewed) return;
+            
+            const btn = document.getElementById(`btn-witness-${id}`);
+            const ringAudio = document.getElementById('phone-ring-sound');
+            
+            // State: Menghubungi
+            btn.innerHTML = `<span class="animate-pulse">📞</span> MENGHUBUNGI...`;
+            btn.classList.replace('bg-purple-900/40', 'bg-amber-900/50');
+            btn.classList.replace('border-purple-500', 'border-amber-500');
+            btn.classList.replace('text-purple-200', 'text-amber-200');
+            btn.disabled = true;
+            
+            ringAudio.currentTime = 0;
+            ringAudio.play().catch(e=>console.log(e));
+            
+            setTimeout(() => {
+                ringAudio.pause();
+                
+                // State: Tersambung
+                btn.innerHTML = `<span class="animate-pulse">🗣️</span> TERSAMBUNG... MENDENGARKAN`;
+                btn.classList.replace('bg-amber-900/50', 'bg-green-900/50');
+                btn.classList.replace('border-amber-500', 'border-green-500');
+                btn.classList.replace('text-amber-200', 'text-green-200');
+                
+                // Teks yang akan dibaca oleh Saksi menggunakan Web Speech API
+                let witnessText = id === 1 
+                    ? "Dulu dia mengancam saya dengan kata 'Rekening akan disita negara'. Saya panik sekali dan ketakutan waktu itu."
+                    : "Dia pakai kata 'Kami dari pihak instansi'. Padahal teleponnya pakai nomor hape biasa, bukan nomor telepon kantor.";
+
+                // Deteksi Gender Berdasarkan Nama Saksi
+                const witnessName = id === 1 
+                    ? witnessNamesList[(state.activeCaseId * 2) % witnessNamesList.length]
+                    : witnessNamesList[((state.activeCaseId * 2) + 1) % witnessNamesList.length];
+                
+                // Jika nama mengandung Ibu atau Nn., ubah pitch menjadi suara perempuan. 
+                // Jika laki-laki: Tegas, gagah, berat (0.75), dan jelas/jernih (rate 0.95).
+                const isFemale = witnessName.includes('Ibu') || witnessName.includes('Nn.');
+                const ttsPitch = isFemale ? 1.4 : 0.75; 
+                const ttsRate = isFemale ? 1.0 : 0.95; 
+
+                // Memanggil fungsi speakText dengan nada suara sesuai gender
+                speakText(witnessText, ttsPitch, ttsRate, () => {
+                    if(id === 1) {
+                        state.witness1Interviewed = true;
+                        addClue(1, `witness_1_${Date.now()}`, "Kesaksian Korban 1", "Kesaksian Verbal", "Mendukung adanya unsur paksaan dan ketakutan.");
+                    } else {
+                        state.witness2Interviewed = true;
+                        addClue(1, `witness_2_${Date.now()}`, "Kesaksian Korban 2", "Kesaksian Verbal", "Mendukung penemuan Deiksis Sosial palsu.");
+                    }
+                    showNotification(`Kesaksian Saksi ${id} Terekam`, "success");
+                    renderWitnesses(); // Refresh UI State
+                });
+
+            }, 3000); // Durasi memanggil
+        }
+
+        function openEvidenceBoard() {
+            document.getElementById('evidence-modal').classList.remove('hidden');
+            const board = document.getElementById('evidence-grid');
+            const svgLine = document.getElementById('red-thread-canvas');
+            
+            if(state.evidence.length === 0) {
+                board.innerHTML = `<div class="text-center text-slate-500 font-mono-cyber col-span-2 md:col-span-4 py-20 text-lg uppercase tracking-widest border-2 border-dashed border-slate-800 rounded-xl">Belum ada bukti yang diamankan.</div>`;
+                svgLine.innerHTML = '';
+                return;
+            }
+            
+            // Gambar Kartu Bukti ala Polaroid berkesinambungan
+            board.innerHTML = state.evidence.map((e, index) => {
+                const rot = (index % 2 === 0 ? '-' : '') + (Math.floor(Math.random() * 3) + 1);
+                const placeholderUrl = `https://placehold.co/150x80/12161f/00f0ff?text=BUKTI+0${index+1}`;
+
+                return `
+                <div class="bg-[#e2e8f0] p-3 pb-8 rounded shadow-[0_10px_30px_rgba(0,0,0,0.9)] transform rotate-${rot} hover:scale-105 hover:z-50 transition-all cursor-crosshair group relative" id="evidence-card-${index}">
+                    <!-- Foto Berkesinambungan -->
+                    <div class="w-full h-20 bg-[#0B0E14] mb-2 border border-slate-800 rounded flex items-center justify-center overflow-hidden relative">
+                        <img src="${placeholderUrl}" alt="Evidence" class="w-full opacity-80 mix-blend-screen grayscale group-hover:grayscale-0 transition-all">
+                        <div class="absolute inset-0 bg-cyan-900/20"></div>
+                    </div>
+
+                    <div class="w-full min-h-[4rem] bg-[#12161f] border border-slate-800 flex items-center justify-center p-2 mb-2 relative overflow-hidden group-hover:border-cyan-500 transition-colors">
+                        <span class="text-[9px] text-cyan-50 font-mono-cyber line-clamp-3 text-center leading-relaxed">"${e.text}"</span>
+                    </div>
+                    <div class="text-xs text-black font-bold mb-1 uppercase tracking-wider">${e.type}</div>
+                    <div class="text-[10px] text-slate-700 font-mono-cyber leading-tight">${e.reason}</div>
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 text-2xl drop-shadow-md z-10 text-red-600 group-hover:scale-125 transition-transform">📌</div>
+                </div>
+            `}).join('');
+            
+            // Simulasi Garis Benang Merah (SVG berkesinambungan)
+            if(state.evidence.length > 1) {
+                setTimeout(() => {
+                    let pathD = "";
+                    const cards = document.querySelectorAll('[id^="evidence-card-"]');
+                    
+                    if(cards.length > 1) {
+                        const boardRect = board.getBoundingClientRect();
+                        
+                        cards.forEach((card, i) => {
+                            const rect = card.getBoundingClientRect();
+                            // Mengkalkulasi titik hubung garis (center dari grid)
+                            const x = rect.left - boardRect.left + (rect.width / 2);
+                            const y = rect.top - boardRect.top + 20; 
+                            
+                            if (i === 0) {
+                                pathD += `M ${x} ${y}`;
+                            } else {
+                                pathD += ` L ${x} ${y}`;
+                            }
+                        });
+                        svgLine.innerHTML = `<path d="${pathD}" fill="transparent" stroke="#ef4444" stroke-width="2" stroke-dasharray="8,4" filter="drop-shadow(0px 3px 3px rgba(0,0,0,0.8))" />`;
+                    }
+                }, 100);
+            } else {
+                svgLine.innerHTML = '';
+            }
+        }
+        function closeEvidenceBoard() { document.getElementById('evidence-modal').classList.add('hidden'); }
+
+        // --- DUEL LOGIC ---
+        let duelTimerInt;
+        function openDuel() {
+            if(state.quizIndex >= 10) return showNotification("Semua Kuis Duel di kasus ini telah diselesaikan.", "warning");
+            if(state.energy < 1) return showNotification("Energi habis! Baca Jurnal untuk isi ulang.", "error");
+            
+            state.energy--; updateDashboard();
+            
+            // Render Quiz
+            const qData = quizDB[state.quizIndex];
+            document.getElementById('duel-question').innerText = qData.q;
+            document.getElementById('quiz-progress-text').innerText = `${state.quizIndex + 1}/10`;
+            
+            const answersContainer = document.getElementById('duel-answers');
+            answersContainer.innerHTML = qData.options.map((opt, idx) => `
+                <button onclick="answerDuel(${idx === qData.answer})" class="glass-panel border border-slate-600 text-slate-300 p-3 rounded hover:bg-red-900/50 hover:border-red-500 hover:text-white btn-3d font-mono-cyber">${opt}</button>
+            `).join('');
+
+            document.getElementById('duel-modal').classList.remove('hidden');
+            startTimer('duel-timer', 60, closeDuel);
+        }
+        function closeDuel() { 
+            document.getElementById('duel-modal').classList.add('hidden'); 
+            clearInterval(duelTimerInt); 
+        }
+        function answerDuel(isCorrect) {
+            clearInterval(duelTimerInt);
+            const feedback = document.getElementById('duel-feedback');
+            const icon = document.getElementById('duel-feedback-icon');
+            const text = document.getElementById('duel-feedback-text');
+            const modalContent = document.getElementById('duel-modal-content');
+            
+            feedback.classList.remove('hidden');
+            feedback.classList.add('flex');
+            
+            // Umban balik visual dan Audio Merah (Salah) / Hijau (Benar)
+            if(isCorrect) {
+                document.getElementById('sfx-correct').play().catch(e=>console.log(e));
+                modalContent.classList.remove('animate-shake'); // Hapus getar jika ada
+                
+                icon.innerText = "✅";
+                icon.className = "text-7xl mb-4 drop-shadow-[0_0_20px_rgba(0,255,102,0.8)] animate-bounce";
+                text.innerText = "BENAR!";
+                text.className = "text-3xl font-bold font-mono-cyber text-green-400 drop-shadow-md";
+                addClue(1, `duel_${Date.now()}`, "Kuis Pengetahuan", "Bukti Teoritis", "Analisis Teori tervalidasi via kuis.");
+            } else {
+                document.getElementById('sfx-wrong').play().catch(e=>console.log(e));
+                modalContent.classList.add('animate-shake'); // Tambahkan efek getar
+                
+                icon.innerText = "❌";
+                icon.className = "text-7xl mb-4 drop-shadow-[0_0_20px_rgba(255,0,0,0.8)]";
+                text.innerText = "SALAH!";
+                text.className = "text-3xl font-bold font-mono-cyber text-red-500 drop-shadow-[0_0_10px_rgba(255,0,0,0.8)]";
+            }
+            
+            state.quizIndex++;
+            updateDashboard();
+
+            // Sembunyikan feedback dan tutup setelah 2 detik
+            setTimeout(() => {
+                feedback.classList.add('hidden');
+                feedback.classList.remove('flex');
+                modalContent.classList.remove('animate-shake'); // Hapus efek getar saat menutup
+                closeDuel();
+                
+                if(isCorrect) {
+                    showNotification("+1 Bukti Diamankan", "success");
+                } else {
+                    showNotification("Jawaban Salah! Pelajari lagi di Jurnal.", "error");
+                }
+            }, 2000);
+        }
+
+        // --- FLASHCARD LOGIC ---
+        let flashcardTimerInt;
+        function openFlashcard() {
+            if(state.flashcardIndex >= 5) return showNotification("Semua Flashcard di kasus ini telah diselesaikan.", "warning");
+            if(state.energy < 1) return showNotification("Energi habis! Baca Jurnal untuk isi ulang.", "error");
+            
+            state.energy--; updateDashboard();
+            
+            // Render Flashcard
+            const fData = flashcardDB[state.flashcardIndex];
+            document.getElementById('flashcard-title').innerText = fData.title;
+            document.getElementById('flashcard-text').innerText = `"${fData.text}"`;
+            document.getElementById('flashcard-progress-text').innerText = `${state.flashcardIndex + 1}/5`;
+
+            document.getElementById('flashcard-modal').classList.remove('hidden');
+            startTimer('flashcard-timer', 80, closeFlashcard);
+        }
+        function closeFlashcard() { 
+            document.getElementById('flashcard-modal').classList.add('hidden'); 
+            clearInterval(flashcardTimerInt); 
+            if(audioPlayback) audioPlayback.pause();
+        }
+        
+        async function startMicRecording() {
+            if(state.micActive) return;
+            const btn = document.getElementById('mic-btn');
+            const status = document.getElementById('mic-status');
+            
+            state.micActive = true;
+            btn.innerHTML = `<span class="text-2xl animate-pulse">🔴</span> MEREKAM...`;
+            btn.classList.add('bg-red-900/30', 'border-red-500', 'text-red-400');
+            btn.classList.remove('bg-[#1a1c23]', 'border-amber-500', 'text-amber-500');
+            status.classList.remove('text-transparent', 'text-amber-400');
+            status.classList.add('text-red-400', 'animate-pulse');
+            status.innerText = "Merekam... Bicaralah sekarang";
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.start();
+            } catch(e) {
+                console.warn("Izin mikrofon ditolak atau tidak didukung di iframe ini. Simulasi aktif.");
+            }
+        }
+
+        function stopMicRecording() {
+            if(!state.micActive) return;
+            state.micActive = false;
+            
+            const btn = document.getElementById('mic-btn');
+            const status = document.getElementById('mic-status');
+            
+            btn.innerHTML = `<span class="text-2xl animate-spin">⏳</span> MEMPROSES...`;
+            btn.classList.remove('bg-red-900/30', 'border-red-500', 'text-red-400');
+            btn.classList.add('bg-[#1a1c23]', 'border-amber-500', 'text-amber-500');
+            status.classList.remove('text-red-400', 'animate-pulse');
+            status.classList.add('text-amber-400');
+            status.innerText = "Memutar ulang rekaman Anda...";
+
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    audioPlayback = new Audio(audioUrl);
+                    audioPlayback.play();
+                    
+                    audioPlayback.onended = finalizeFlashcard;
+                };
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(t => t.stop()); // Bebaskan mic
+            } else {
+                // Fallback jika tidak ada akses mic
+                setTimeout(finalizeFlashcard, 2500);
+            }
+        }
+
+        function finalizeFlashcard() {
+            const feedback = document.getElementById('flashcard-feedback');
+            const btn = document.getElementById('mic-btn');
+            const status = document.getElementById('mic-status');
+
+            state.flashcardIndex++; 
+            
+            // Visual Feedback Hijau
+            feedback.classList.remove('hidden');
+            feedback.classList.add('flex');
+            
+            addClue(2, `audio_${Date.now()}`, "[REKAMAN SUARA VALID: Penjelasan Terekam]", "Analisis Suara", "Penjelasan verbal disetujui oleh sistem AI.");
+            
+            setTimeout(() => {
+                feedback.classList.add('hidden');
+                feedback.classList.remove('flex');
+                showNotification('Analisis Suara Diterima! +2 Bukti', 'success');
+                closeFlashcard();
+                
+                // Reset tombol
+                btn.innerHTML = `<span class="text-2xl">🎙️</span> TAHAN UNTUK BICARA`;
+                status.classList.add('text-transparent');
+                status.classList.remove('text-amber-400');
+            }, 2000);
+        }
+
+        // --- TIMERS ---
+        function startTimer(elementId, seconds, timeoutCallback) {
+            const el = document.getElementById(elementId);
+            el.innerText = `${seconds}s`;
+            
+            const interval = setInterval(() => {
+                seconds--;
+                el.innerText = `${seconds}s`;
+                if(seconds <= 10) el.classList.add('text-red-500');
+                
+                if(seconds <= 0) {
+                    clearInterval(interval);
+                    el.classList.remove('text-red-500');
+                    showNotification("Waktu Habis!", "error");
+                    timeoutCallback();
+                }
+            }, 1000);
+            
+            if(elementId === 'duel-timer') duelTimerInt = interval;
+            if(elementId === 'flashcard-timer') flashcardTimerInt = interval;
+        }
+        
+        // --- AI CHAT LOGIC ---
+        function sendAIMessage() {
+            const inp = document.getElementById('ai-input');
+            const msgText = inp.value.trim();
+            if(!msgText) return;
+            
+            const log = document.getElementById('ai-chat-logs');
+            log.innerHTML += `<div class="self-end text-right bg-cyan-900 border border-cyan-700 p-2 rounded-lg text-cyan-100 max-w-[85%] ml-auto shadow">${msgText}</div>`;
+            inp.value = '';
+            
+            // Auto scroll to bottom
+            setTimeout(() => { log.scrollTop = log.scrollHeight; }, 50);
+            
+            // Fake AI Reply
+            setTimeout(() => {
+                let reply = "Menganalisis permintaan...";
+                const lowerMsg = msgText.toLowerCase();
+                
+                if(lowerMsg.includes("petunjuk") || lowerMsg.includes("bingung") || lowerMsg.includes("help")) {
+                    reply = "Perhatikan kata 'sepertinya' atau 'kemungkinan'. Itu adalah bentuk <b>Hedging</b>. Sedangkan klaim 'Kami dari instansi' dengan ancaman blokir mendadak adalah ciri <b>Deiksis Palsu & Implikatur Mendesak</b>.";
+                } else {
+                    reply = "Saya terkalibrasi untuk merespon kata kunci 'petunjuk' terkait analisis linguistik. Silakan ketik 'petunjuk' jika butuh bantuan.";
+                }
+                
+                log.innerHTML += `
+                    <div class="self-start flex gap-2 w-full">
+                        <div class="w-6 h-6 rounded-full bg-cyan-500 flex items-center justify-center text-xs shrink-0 font-bold text-black mt-1">AI</div>
+                        <div class="bg-cyan-950/80 border border-cyan-800 p-3 rounded-lg text-cyan-100 shadow-inner w-full">${reply}</div>
+                    </div>`;
+                log.scrollTop = log.scrollHeight;
+            }, 1000);
+        }
+
+        // Live Clock
+        setInterval(() => {
+            const now = new Date();
+            const timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('phone-time').innerText = timeString;
+        }, 1000);
+
+    </script>
+</body>
+</html>
