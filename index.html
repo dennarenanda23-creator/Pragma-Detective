@@ -863,26 +863,117 @@
         let audioChunks = [];
         let audioPlayback = null;
 
-        const quizDB = [
-            { q: "Kata 'sepertinya' dan 'kemungkinan' merupakan penanda linguistik dari...", options: ["Deiksis Person", "Hedging (Keraguan)", "Implikatur Percakapan", "Maksim Kuantitas"], answer: 1 },
-            { q: "Teknik 'False Urgency' (Mendesak) bertujuan untuk...", options: ["Mematikan rasionalitas", "Memberi informasi detail", "Sopan santun", "Mematuhi hukum"], answer: 0 },
-            { q: "Penggunaan 'Kami dari kepolisian' oleh penipu disebut...", options: ["Maksim Kualitas", "Hedging", "Deiksis Sosial Palsu", "Kalimat Deklaratif"], answer: 2 },
-            { q: "Implikatur dalam penipuan sering berupa...", options: ["Fakta yang jelas", "Ancaman terselubung", "Salam hangat", "Data numerik"], answer: 1 },
-            { q: "Jika ada frasa 'Klik link ini dalam 5 menit', itu termasuk...", options: ["Deiksis Waktu", "Hedging", "Keraguan", "Sapaan"], answer: 0 },
-            { q: "Maksim Kualitas dilanggar penipu ketika mereka...", options: ["Bicara terlalu panjang", "Memberikan informasi palsu", "Bergumam", "Menjawab tidak nyambung"], answer: 1 },
-            { q: "Deiksis Persona digunakan untuk...", options: ["Menunjuk waktu", "Menunjuk tempat", "Merujuk orang/pelaku", "Menyatakan keraguan"], answer: 2 },
-            { q: "Frasa 'Mungkin rekening anda diblokir' mengandung makna...", options: ["Pasti diblokir", "Sedang diproses", "Intimidasi + Hedging", "Pemberitahuan resmi"], answer: 2 },
-            { q: "Strategi penipu untuk tampil berwibawa adalah menggunakan...", options: ["Bahasa gaul", "Register instansi/formal", "Singkatan", "Emoji tertawa"], answer: 1 },
-            { q: "Tujuan utama Pragmatik Forensik adalah...", options: ["Menangkap pelaku langsung", "Menganalisis niat di balik teks", "Melacak IP address", "Mengembalikan uang korban"], answer: 1 }
+        // --- DATABASE KUIS & FLASHCARD BERDASARKAN TEMA KASUS (5 TEMA) ---
+        const allQuizDB = [
+            // Tema 0: Phishing APK Kurir
+            [
+                { q: "Frasa 'Paket Anda tertunda' mengandung Praanggapan bahwa...", options: ["Kurir sedang sakit", "Anda benar-benar memesan barang", "Alamat salah", "Toko tutup"], answer: 1 },
+                { q: "Perintah 'Buka resi_paket.apk sekarang juga' merupakan contoh tindak tutur...", options: ["Direktif (Memerintah)", "Ekspresif", "Komisif", "Deklaratif"], answer: 0 },
+                { q: "Penipu sering menggunakan nama ekspedisi terkenal. Ini adalah bentuk manipulasi...", options: ["Hedging", "Otoritas & Kepercayaan", "Deiksis Waktu", "Maksim Kuantitas"], answer: 1 },
+                { q: "Apa implikatur dari 'Jika tidak dicek, paket dikembalikan ke pengirim'?", options: ["Kurir lelah", "Anda akan rugi jika tidak segera klik", "Barang palsu", "Sistem error"], answer: 1 },
+                { q: "Penggunaan ekstensi '.apk' yang disamarkan sebagai foto resi melanggar maksim...", options: ["Kualitas (Berbohong)", "Kuantitas", "Relevansi", "Cara"], answer: 0 },
+                { q: "Kata 'kami' pada 'Kami dari J&T' oleh penipu disebut sebagai...", options: ["Deiksis Sosial Asli", "Deiksis Sosial Palsu", "Kata Sifat", "Hedging"], answer: 1 },
+                { q: "Kalimat 'Silakan klik link biru di bawah' bertujuan untuk...", options: ["Memberi warna", "Menginstruksi tindakan (Call to Action)", "Menyapa", "Basa-basi"], answer: 1 },
+                { q: "Ketika korban bertanya 'Ini paket apa?', penipu menjawab 'Cek saja di aplikasi'. Ini melanggar maksim...", options: ["Sopan santun", "Kuantitas (Informasi tidak cukup)", "Kualitas", "Tempat"], answer: 1 },
+                { q: "Ancaman 'Kurir sudah di depan rumah' adalah contoh...", options: ["Deiksis Ruang Palsu (False Spatial Deixis)", "Hedging", "Fakta", "Salam"], answer: 0 },
+                { q: "Kenapa penipu menggunakan huruf kapital 'SEGERA CEK'?", options: ["Tombol rusak", "Menciptakan False Urgency (Kepanikan)", "Sopan", "Aturan ejaan"], answer: 1 }
+            ],
+            // Tema 1: Modus Salah Transfer
+            [
+                { q: "Kalimat 'Tolong kembalikan uang susu anak saya' menggunakan teknik...", options: ["Logika rasional", "Manipulasi Emosional (Pathos)", "Ancaman fisik", "Deiksis waktu"], answer: 1 },
+                { q: "Tindak tutur 'Saya akan lapor polisi jika tidak dikembalikan!' termasuk kategori...", options: ["Komisif (Ancaman)", "Ekspresif", "Representatif", "Salam"], answer: 0 },
+                { q: "Penipu memposisikan dirinya sebagai korban. Ini disebut...", options: ["False Victimization", "Hedging", "Maksim Kuantitas", "Pujian"], answer: 0 },
+                { q: "Kata 'segera' pada 'Transfer balik segera' menciptakan...", options: ["Ketenangan", "Implikatur Mendesak", "Keraguan", "Kepercayaan"], answer: 1 },
+                { q: "Praanggapan dari modus ini adalah...", options: ["Korban baru gajian", "Dana di rekening korban tiba-tiba bertambah", "Bank sedang error", "Tidak ada admin"], answer: 1 },
+                { q: "Mengapa penipu mendesak transfer ke rekening berbeda (bukan yang pengirim)?", options: ["Biar cepat", "Pencucian uang & penghindaran jejak", "Bank tutup", "Lebih murah"], answer: 1 },
+                { q: "Kata ganti 'Saya' dan 'Anda' yang digunakan secara agresif menunjukkan...", options: ["Jarak sosial yang jauh (Permusuhan)", "Keakraban", "Hedging", "Kesopanan"], answer: 0 },
+                { q: "Pesan mutasi palsu (struk editan) melanggar prinsip...", options: ["Kejujuran / Kualitas", "Kuantitas", "Relevansi", "Cara"], answer: 0 },
+                { q: "Apa ciri khas bahasa penipu jika korban mulai curiga?", options: ["Minta maaf", "Berubah menjadi kasar/intimidatif", "Diam", "Memberi hadiah"], answer: 1 },
+                { q: "Tujuan pragmatik dari tangisan (voice note) penipu adalah...", options: ["Mematikan logika kritis korban", "Latihan akting", "Minta pulsa", "Menghibur"], answer: 0 }
+            ],
+            // Tema 2: Romance Scam
+            [
+                { q: "Penggunaan sapaan 'Sayang' atau 'Dear' kepada orang yang baru dikenal adalah...", options: ["Deiksis Sosial Manipulatif", "SOP Formal", "Hedging", "Ancaman"], answer: 0 },
+                { q: "Pesan 'Aku sedang ditahan imigrasi, butuh dana cepat' menciptakan...", options: ["Romantisme", "False Emergency (Krisis Palsu)", "Sopan santun", "Investasi"], answer: 1 },
+                { q: "Janji 'Aku akan pindah ke Indonesia menemuimu' termasuk tindak tutur...", options: ["Komisif (Berjanji)", "Direktif", "Ekspresif", "Deklaratif"], answer: 0 },
+                { q: "Penipu sering menggunakan cerita latar belakang (dokter bedah/militer) untuk...", options: ["Gaya-gayaan", "Membangun Otoritas & Trust", "Melamar kerja", "Menipu bank"], answer: 1 },
+                { q: "Kalimat 'Hanya kamu satu-satunya yang bisa bantu aku' merupakan teknik...", options: ["Isolasi Psikologis", "Maksim Kualitas", "Hedging", "Sapaan"], answer: 0 },
+                { q: "Kata 'sepertinya' dalam 'Sepertinya paket hadiahku tertahan' berfungsi sebagai...", options: ["Ketegasan", "Hedging (Membuat alasan yang samar)", "Perintah", "Pujian"], answer: 1 },
+                { q: "Ketika penipu selalu menolak Video Call, ia melanggar maksim...", options: ["Kuantitas", "Kualitas (Menyembunyikan identitas asli)", "Relevansi", "Cara"], answer: 1 },
+                { q: "Implikatur dari pengiriman 'Foto Hadiah Mewah' adalah...", options: ["Pamer kekayaan", "Memancing timbal balik (uang tebusan)", "Salah kirim", "Tugas sekolah"], answer: 1 },
+                { q: "Penggunaan bahasa campuran (Indo-Inggris berantakan) seringkali mengindikasikan...", options: ["Lulusan luar negeri", "Penggunaan mesin penerjemah oleh scammer asing", "Sopan santun", "Gaya bahasa gaul"], answer: 1 },
+                { q: "Target utama dari pragmatik Romance Scam adalah...", options: ["Mencuri password", "Mengeksploitasi keterikatan emosional (Attachment)", "Menjual barang", "Menyebarkan virus"], answer: 1 }
+            ],
+            // Tema 3: Lowongan Kerja Palsu
+            [
+                { q: "Kalimat 'Kerja mudah, cukup like YouTube, gaji harian' menargetkan...", options: ["Ketamakan & Keputusasaan finansial", "Keamanan", "Kedisiplinan", "Kesehatan"], answer: 0 },
+                { q: "Praanggapan dari 'Tingkatkan level VIP Anda untuk mencairkan komisi' adalah...", options: ["Anda dipecat", "Uang komisi sudah ada (padahal fiktif)", "Perusahaan bangkrut", "Website down"], answer: 1 },
+                { q: "Penggunaan istilah 'Tugas', 'Misi', dan 'Deposit' merupakan...", options: ["Jargon penipuan skema Ponzi/Tugas", "Sapaan", "Deiksis", "Hedging"], answer: 0 },
+                { q: "Tindak tutur 'Anda harus transfer pajak 10% dulu' adalah...", options: ["Saran", "Perintah memeras (Direktif Paksaan)", "Pujian", "Permintaan maaf"], answer: 1 },
+                { q: "Grup Telegram yang berisi banyak akun memuji admin bertujuan menciptakan...", options: ["Polusi suara", "Social Proof (Bukti Sosial Palsu)", "Deiksis", "Keakraban"], answer: 1 },
+                { q: "Jika korban ragu, admin menjawab 'Perusahaan kami resmi terdaftar OJK'. Ini adalah...", options: ["Fakta pasti", "Klaim Otoritas Palsu", "Maksim Kuantitas", "Hedging"], answer: 1 },
+                { q: "Janji 'Uang deposit akan dikembalikan utuh beserta untung' melanggar maksim...", options: ["Kualitas (Kebohongan terstruktur)", "Relevansi", "Cara", "Waktu"], answer: 0 },
+                { q: "Implikatur dari 'Misi ini hanya berlaku 3 menit' adalah...", options: ["Harus buru-buru transfer agar tidak sempat mikir", "Waktu istirahat", "Lomba lari", "Sistem error"], answer: 0 },
+                { q: "Kata 'Mentor' atau 'Tutor' yang digunakan penipu berfungsi sebagai...", options: ["Deiksis Sosial (Mengangkat hierarki mereka)", "Nama asli", "Hedging", "Sapaan sayang"], answer: 0 },
+                { q: "Kenapa pada awalnya korban benar-benar dibayar nominal kecil (misal 20rb)?", options: ["Perusahaan amal", "Membangun kepercayaan palsu (Baiting)", "Salah transfer", "Gaji harian"], answer: 1 }
+            ],
+            // Tema 4: Undian Palsu
+            [
+                { q: "Kata 'sepertinya' dan 'kemungkinan' merupakan penanda linguistik dari...", options: ["Deiksis Person", "Hedging (Keraguan)", "Implikatur Percakapan", "Maksim Kuantitas"], answer: 1 },
+                { q: "Teknik 'False Urgency' (Mendesak) bertujuan untuk...", options: ["Mematikan rasionalitas", "Memberi informasi detail", "Sopan santun", "Mematuhi hukum"], answer: 0 },
+                { q: "Penggunaan 'Kami dari kepolisian' oleh penipu disebut...", options: ["Maksim Kualitas", "Hedging", "Deiksis Sosial Palsu", "Kalimat Deklaratif"], answer: 2 },
+                { q: "Implikatur dalam penipuan undian sering berupa...", options: ["Fakta yang jelas", "Kepanikan pajak/blokir terselubung", "Salam hangat", "Data numerik"], answer: 1 },
+                { q: "Jika ada frasa 'Klik link ini dalam 5 menit', itu termasuk...", options: ["Deiksis Waktu", "Hedging", "Keraguan", "Sapaan"], answer: 0 },
+                { q: "Maksim Kualitas dilanggar penipu ketika mereka...", options: ["Bicara terlalu panjang", "Memberikan informasi palsu (Undian Fiktif)", "Bergumam", "Menjawab tidak nyambung"], answer: 1 },
+                { q: "Deiksis Persona digunakan untuk...", options: ["Menunjuk waktu", "Menunjuk tempat", "Merujuk orang/pelaku", "Menyatakan keraguan"], answer: 2 },
+                { q: "Frasa 'Mungkin hadiah anda dihanguskan' mengandung makna...", options: ["Pasti hangus", "Sedang diproses", "Intimidasi + Hedging", "Pemberitahuan resmi"], answer: 2 },
+                { q: "Strategi penipu untuk tampil berwibawa adalah menggunakan...", options: ["Bahasa gaul", "Register instansi/formal", "Singkatan", "Emoji tertawa"], answer: 1 },
+                { q: "Tujuan utama Pragmatik Forensik adalah...", options: ["Menangkap pelaku langsung", "Menganalisis niat di balik teks", "Melacak IP address", "Mengembalikan uang korban"], answer: 1 }
+            ]
         ];
 
-        // Skrip Flashcard
-        const flashcardDB = [
-            { title: "KARTU KASUS 1", text: "Paket Anda tertahan di bea cukai. Klik link ini secepatnya untuk menebus, kalau tidak barang hangus." },
-            { title: "KARTU KASUS 2", text: "Halo, kami dari pihak Kepolisian Siber mendeteksi anomali pada rekening Anda. Transfer segera untuk pengamanan." },
-            { title: "KARTU KASUS 3", text: "Selamat, nomor WA Anda mendapatkan hadiah Rp 100 Juta. Pajak pemenang mohon ditransfer lebih dulu." },
-            { title: "KARTU KASUS 4", text: "Sepertinya akun M-Banking anda sedang diakses orang lain dari luar kota. Mohon konfirmasi PIN anda." },
-            { title: "KARTU KASUS 5", text: "Lowongan kerja paruh waktu! Cukup like produk dapat Rp 500rb per hari. Gabung grup telegram sekarang." }
+        // Skrip Flashcard Berdasarkan Tema Kasus
+        const allFlashcardDB = [
+            // Tema 0: Phishing APK Kurir
+            [
+                { title: "KARTU KURIR 1", text: "Paket Anda tertahan di gudang karena alamat tidak lengkap. Silakan instal aplikasi resi.apk ini untuk memperbarui." },
+                { title: "KARTU KURIR 2", text: "Halo kak, kami dari J&T Express. Ada paket COD atas nama kakak. Mohon cek foto resi di bawah." },
+                { title: "KARTU KURIR 3", text: "Peringatan! Jika aplikasi tidak diunduh dalam 24 jam, paket akan dikembalikan ke Tiongkok." },
+                { title: "KARTU KURIR 4", text: "Kurir sudah di depan gang rumah, tapi nyasar. Tolong klik link map lokasi_paket.apk ini pak." },
+                { title: "KARTU KURIR 5", text: "Mohon maaf sepertinya sistem kami error, tagihan bea cukai paket anda harus dilunasi sekarang lewat link ini." }
+            ],
+            // Tema 1: Modus Salah Transfer
+            [
+                { title: "KARTU TRANSFER 1", text: "Tolong pak/bu, saya salah transfer uang berobat ibu saya ke rekening anda. Tolong kembalikan ke rekening BCA istri saya." },
+                { title: "KARTU TRANSFER 2", text: "Saya mohon belas kasihnya, itu uang pinjol yang tiba-tiba masuk. Jangan dipakai, transfer balik ke virtual account ini segera." },
+                { title: "KARTU TRANSFER 3", text: "Kalau dalam 1 jam uang itu tidak dikembalikan, saya sudah koordinasi dengan pihak kepolisian cyber untuk lacak anda!" },
+                { title: "KARTU TRANSFER 4", text: "Ini bukti mutasinya sudah saya kirim. Saldo anda pasti nambah 5 juta kan? Jangan pura-pura tidak tahu." },
+                { title: "KARTU TRANSFER 5", text: "Sepertinya m-banking mas lagi gangguan, coba cek saldo di ATM sekarang, lalu langsung transfer balik uang saya." }
+            ],
+            // Tema 2: Romance Scam
+            [
+                { title: "KARTU ASMARA 1", text: "Sayang, aku sudah kirimkan tas mewah dan perhiasan dari London, tapi agen bea cukai menahannya di bandara Jakarta." },
+                { title: "KARTU ASMARA 2", text: "Honey, anakku tiba-tiba kecelakaan kritis. Aku tidak bisa akses rekeningku di luar negeri. Bisa pinjam 10 juta dulu?" },
+                { title: "KARTU ASMARA 3", text: "Aku ini perwira militer di Suriah. Masa kamu tidak percaya padaku setelah semua janji manis kita berdua?" },
+                { title: "KARTU ASMARA 4", text: "Tolong bayarkan biaya sertifikat cutiku ke komandan militer, agar aku bisa terbang ke Indonesia menikahimu besok." },
+                { title: "KARTU ASMARA 5", text: "Sepertinya agen pengiriman curiga dengan isi paket kita. Kamu harus transfer uang suap agar mereka melepaskannya." }
+            ],
+            // Tema 3: Lowongan Kerja Palsu
+            [
+                { title: "KARTU LOKER 1", text: "Selamat, Anda diterima kerja paruh waktu! Tugasnya hanya like video YouTube dan dapatkan 50rb per tugas." },
+                { title: "KARTU LOKER 2", text: "Untuk mencairkan komisi hari ini, Anda diwajibkan menyelesaikan 'Tugas Gabungan' dengan deposit awal 500rb." },
+                { title: "KARTU LOKER 3", text: "Mohon maaf, Anda salah memasukkan data pesanan. Semua dana Anda dibekukan. Bayar denda 2 juta untuk memulihkan akun." },
+                { title: "KARTU LOKER 4", text: "Perusahaan kami legal dan diawasi OJK. Silakan cek sertifikat resmi kami yang sudah saya kirimkan ini." },
+                { title: "KARTU LOKER 5", text: "Waktu Anda untuk menyelesaikan misi VIP ini sisa 3 menit. Jika gagal, reputasi kredit Anda akan masuk blacklist nasional." }
+            ],
+            // Tema 4: Undian Palsu
+            [
+                { title: "KARTU UNDIAN 1", text: "Halo, kami dari pihak Kepolisian Siber mendeteksi anomali pada rekening Anda. Transfer segera untuk pengamanan." },
+                { title: "KARTU UNDIAN 2", text: "Selamat, nomor WA Anda mendapatkan hadiah Rp 100 Juta. Pajak pemenang mohon ditransfer lebih dulu ke rekening bendahara." },
+                { title: "KARTU UNDIAN 3", text: "Sepertinya akun M-Banking anda sedang diakses orang lain dari luar kota. Mohon konfirmasi PIN dan OTP anda sekarang." },
+                { title: "KARTU UNDIAN 4", text: "Ini dari customer service pusat. Jika link pembaruan tarif tidak diklik, mulai malam ini saldo akan dipotong 150rb per bulan." },
+                { title: "KARTU UNDIAN 5", text: "Kami beri waktu 10 menit untuk melunasi biaya administrasi. Jika lewat, hadiah mobil mewah akan diserahkan ke negara." }
+            ]
         ];
 
         // --- CORE GAME DATA & FUNCTIONS ---
@@ -1732,8 +1823,10 @@
             
             state.energy--; updateDashboard();
             
-            // Render Quiz
-            const qData = quizDB[state.quizIndex];
+            // Render Quiz Berdasarkan Tema Kasus
+            const themeIndex = (state.activeCaseId - 1) % 5;
+            const qData = allQuizDB[themeIndex][state.quizIndex];
+            
             document.getElementById('duel-question').innerText = qData.q;
             document.getElementById('quiz-progress-text').innerText = `${state.quizIndex + 1}/10`;
             
@@ -1806,8 +1899,10 @@
             
             state.energy--; updateDashboard();
             
-            // Render Flashcard
-            const fData = flashcardDB[state.flashcardIndex];
+            // Render Flashcard Berdasarkan Tema Kasus
+            const themeIndex = (state.activeCaseId - 1) % 5;
+            const fData = allFlashcardDB[themeIndex][state.flashcardIndex];
+            
             document.getElementById('flashcard-title').innerText = fData.title;
             document.getElementById('flashcard-text').innerText = `"${fData.text}"`;
             document.getElementById('flashcard-progress-text').innerText = `${state.flashcardIndex + 1}/5`;
