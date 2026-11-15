@@ -312,6 +312,9 @@
         <div class="glass-panel p-6 rounded-xl w-full max-w-sm slide-up border border-green-900">
             <h3 class="font-bold text-green-400 mb-4 font-mono-cyber">>_ JOIN SECURE ROOM</h3>
             <input type="text" placeholder="Masukkan Kode Room (ex: 7712)..." class="w-full bg-[#0a0c10] border border-slate-700 text-white p-3 rounded mb-4 font-mono-cyber focus:border-green-500 outline-none text-center tracking-widest shadow-inner">
+            <div class="text-xs text-green-500 mb-2 font-mono-cyber uppercase">Undang Agen (Opsional):</div>
+            <input type="text" id="friend-name-input" placeholder="Nama Agen 1..." class="w-full bg-[#0a0c10] border border-slate-700 text-white p-2 rounded mb-2 font-mono-cyber focus:border-green-500 outline-none text-center uppercase shadow-inner text-sm">
+            <input type="text" id="friend-name-input-2" placeholder="Nama Agen 2..." class="w-full bg-[#0a0c10] border border-slate-700 text-white p-2 rounded mb-4 font-mono-cyber focus:border-green-500 outline-none text-center uppercase shadow-inner text-sm">
             <div class="flex gap-2">
                 <button onclick="enterTogetherGame()" class="flex-1 bg-green-900/50 text-green-400 border border-green-500 p-3 rounded hover:bg-green-700 hover:text-white btn-3d font-mono-cyber font-bold tracking-widest">JOIN</button>
                 <button onclick="closeRoomModal()" class="flex-1 bg-slate-800 text-white p-3 rounded btn-3d font-mono-cyber hover:bg-slate-700">CANCEL</button>
@@ -1140,6 +1143,65 @@
             closeRoomModal();
             document.getElementById('mode-selection-screen').classList.add('hidden');
             startGame();
+
+            // Logika Simulasi Teman Bergabung dengan safety check
+            const f1Input = document.getElementById('friend-name-input');
+            const f2Input = document.getElementById('friend-name-input-2');
+            const friend1 = f1Input ? f1Input.value.trim() : '';
+            const friend2 = f2Input ? f2Input.value.trim() : '';
+            
+            let joinDelay = 2000;
+            let playersCount = 1;
+
+            if (friend1) {
+                setTimeout(() => {
+                    playJoinNotification(friend1);
+                    playersCount++;
+                    checkRoomFull(playersCount, friend1, friend2);
+                }, joinDelay);
+                joinDelay += 3000;
+            }
+            
+            if (friend2) {
+                setTimeout(() => {
+                    playJoinNotification(friend2);
+                    playersCount++;
+                    checkRoomFull(playersCount, friend1, friend2);
+                }, joinDelay);
+            }
+        }
+
+        function playJoinNotification(name) {
+            const joinSound = document.getElementById('alarm-sound'); 
+            if (joinSound) {
+                joinSound.loop = false; // Memastikan alarm sound hanya berbunyi sekali sebagai notif
+                joinSound.currentTime = 0;
+                joinSound.play().catch(e => console.log(e));
+            }
+            showNotification(`Agen ${name.toUpperCase()} bergabung ke ruangan.`, "success");
+        }
+
+        function checkRoomFull(count, f1, f2) {
+            let maxPlayers = 1;
+            if (f1) maxPlayers++;
+            if (f2) maxPlayers++;
+
+            if (count === maxPlayers && count > 1) {
+                setTimeout(() => {
+                    // Memicu efek getaran fisik di HP
+                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                    
+                    // Efek getaran visual di layar (Telepon bergetar)
+                    const phone = document.getElementById('phone-container');
+                    if (phone) phone.classList.add('animate-shake');
+                    
+                    showNotification("RUANG PENUH! Investigasi Bersama Dimulai.", "warning");
+                    
+                    setTimeout(() => {
+                        if (phone) phone.classList.remove('animate-shake');
+                    }, 1000);
+                }, 1000);
+            }
         }
 
         function confirmExit() { document.getElementById('exit-modal').classList.remove('hidden'); }
