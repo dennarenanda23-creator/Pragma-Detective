@@ -1923,6 +1923,15 @@
             showNotification("Investigasi Dihentikan", "warning");
         }
 
+        function returnToMenu() {
+            document.getElementById('win-modal').classList.add('hidden');
+            document.getElementById('game-main-ui').classList.add('hidden');
+            document.getElementById('phone-toggle-btn').classList.add('hidden');
+            document.getElementById('map-toggle-btn').classList.add('hidden');
+            document.getElementById('tutorial-toggle-btn').classList.add('hidden');
+            showCasesMenu();
+        }
+
         function sendTeamMessage() {
             const inp = document.getElementById('team-chat-input');
             const msg = inp.value.trim();
@@ -2648,5 +2657,9 @@
         });
 
     </script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="multiplayer.js"></script>
 </body>
 </html>
