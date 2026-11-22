@@ -340,7 +340,6 @@
 
         <!-- Left Column: Smartphone OS -->
         <section id="phone-section" class="w-full lg:w-4/12 flex justify-center h-full relative z-10 transition-all duration-300">
-            <!-- Tambahkan id="phone-container" untuk efek getar -->
             <div id="phone-container" class="phone-bezel w-full max-w-md h-full max-h-[800px] flex flex-col overflow-hidden bg-[#0a0c10] relative transition-all">
                 <div class="phone-screen-scanline"></div>
                 
@@ -464,9 +463,9 @@
                 </div>
             </div>
 
-            <!-- Grid Apps (Layout Baru Vertikal & Sejajar) -->
+            <!-- Grid Apps -->
             <div class="grid grid-cols-2 gap-4 flex-grow">
-                <!-- Saksi (Paling Atas - Full Lebar) -->
+                <!-- Saksi -->
                 <button onclick="openWitness()" class="col-span-2 glass-panel btn-3d rounded-xl p-5 hover:border-purple-500/50 flex items-center justify-center gap-6 group transition-colors">
                     <div class="text-4xl group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]">📞</div>
                     <div class="text-left">
@@ -475,7 +474,7 @@
                     </div>
                 </button>
 
-                <!-- Papan Bukti (Kiri) & Jurnal Materi (Kanan) -->
+                <!-- Papan Bukti & Jurnal Materi -->
                 <button onclick="openEvidenceBoard()" class="col-span-1 glass-panel btn-3d rounded-xl p-5 hover:border-cyan-500/50 flex flex-col items-center justify-center gap-3 group transition-colors">
                     <div class="text-4xl group-hover:scale-110 neon-text-cyan transition-transform drop-shadow-[0_0_10px_rgba(0,240,255,0.5)]">🕸️</div>
                     <h3 class="text-sm font-bold text-white uppercase tracking-widest text-center">Papan Bukti</h3>
@@ -487,7 +486,7 @@
                     <h3 class="text-sm font-bold text-white uppercase tracking-widest text-center">Jurnal Materi</h3>
                 </button>
 
-                <!-- Duel Kuis (Kiri) & Flashcard Voice (Kanan) -->
+                <!-- Duel Kuis & Flashcard Voice -->
                 <button onclick="openDuel()" class="col-span-1 glass-panel btn-3d rounded-xl p-5 hover:border-red-500/50 flex flex-col items-center justify-center gap-3 group transition-colors">
                     <div class="text-4xl group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(255,59,48,0.5)]">⚔️</div>
                     <h3 class="text-sm font-bold text-white uppercase tracking-widest text-center">Duel Kuis</h3>
@@ -498,6 +497,20 @@
                     <div class="text-4xl group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(245,158,11,0.5)]">🎴</div>
                     <h3 class="text-sm font-bold text-white uppercase tracking-widest text-center">Flashcard Voice</h3>
                     <p class="text-slate-400 text-[9px] text-center font-mono-cyber bg-black/50 py-1 px-2 rounded">Progress: <span id="flashcard-progress-btn" class="text-amber-400 font-bold">0/5</span></p>
+                </button>
+
+                <!-- Dekripsi Berkas (Bypass Firewall) -->
+                <button onclick="openDecryption()" class="col-span-1 glass-panel btn-3d rounded-xl p-5 hover:border-pink-500/50 flex flex-col items-center justify-center gap-3 group transition-colors mt-2">
+                    <div class="text-4xl group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(236,72,153,0.5)]">🔐</div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-widest text-center">Bypass Firewall</h3>
+                    <p class="text-slate-400 text-[9px] text-center font-mono-cyber bg-black/50 py-1 px-2 rounded">Status: <span id="decrypt-status" class="text-pink-400 font-bold">LOCKED</span></p>
+                </button>
+
+                <!-- Analisis Visual (Hidden Object) -->
+                <button onclick="openVisualAnalysis()" class="col-span-1 glass-panel btn-3d rounded-xl p-5 hover:border-teal-500/50 flex flex-col items-center justify-center gap-3 group transition-colors mt-2">
+                    <div class="text-4xl group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(20,184,166,0.5)]">🔎</div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-widest text-center">Analisis Visual</h3>
+                    <p class="text-slate-400 text-[9px] text-center font-mono-cyber bg-black/50 py-1 px-2 rounded">Progress: <span id="visual-status" class="text-teal-400 font-bold">0/1</span></p>
                 </button>
             </div>
         </section>
@@ -593,6 +606,24 @@
                 </div>
                 
                 <div class="p-5 flex-grow overflow-y-auto">
+                    <!-- Culprit Profile -->
+                    <div class="flex items-center gap-4 mb-4 bg-slate-900/50 p-3 rounded border border-slate-700 shadow-inner">
+                        <div class="w-16 h-16 bg-black border border-red-500/50 rounded overflow-hidden flex items-center justify-center relative shrink-0">
+                            <!-- Siluet Pelaku -->
+                            <svg class="w-12 h-12 text-slate-700" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                            <div class="absolute inset-0 bg-red-900/20 mix-blend-color-burn"></div>
+                            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8L3N2Zz4=')] opacity-50"></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-red-500 font-bold font-mono-cyber animate-pulse mb-1">TARGET: UNKNOWN_ID</div>
+                            <div class="text-[9px] text-slate-400 font-mono-cyber leading-tight">
+                                <span class="text-cyan-500">Tinggi:</span> ~170cm<br>
+                                <span class="text-cyan-500">Ciri Khusus:</span> Memakai jaket gelap, topi, dan sering beroperasi dari warnet atau ruko kosong.<br>
+                                <span class="text-cyan-500">Status:</span> Berpindah-pindah
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="bg-black/50 text-green-400 text-xs p-3 border border-green-500/50 rounded font-mono-cyber shadow-lg mb-6">
                         Sinyal Penipu Berpindah...<br>
                         Koordinat: <span id="map-coords-text">-6.2088, 106.8456</span><br>
@@ -659,42 +690,194 @@
 
     <!-- Jurnal Materi (Debriefing) Modal -->
     <div id="jurnal-modal" class="hidden fixed inset-0 z-[300] bg-black/95 flex flex-col items-center justify-center p-4 fade-in">
-        <div class="w-full max-w-3xl h-[75vh] glass-panel rounded-xl overflow-hidden slide-up flex flex-col border border-blue-900">
+        <div class="w-full max-w-4xl h-[82vh] glass-panel rounded-xl overflow-hidden slide-up flex flex-col border border-blue-900">
             <div class="p-5 border-b border-blue-900 bg-[#0a0c10] flex justify-between items-center shadow-md">
-                <h3 class="font-bold text-blue-400 font-mono-cyber text-lg">📁 JURNAL LINGUISTIK FORENSIK</h3>
-                <button onclick="closeDebriefing()" class="text-slate-400 hover:text-red-500 font-bold text-xl leading-none">×</button>
+                <div>
+                    <h3 class="font-bold text-blue-400 font-mono-cyber text-lg">📁 MODUL & JURNAL LINGUISTIK FORENSIK</h3>
+                    <p class="text-[10px] text-slate-400 font-mono-cyber">Referensi Akademik Pragmatik (Pertemuan 2–7) & Aplikasi Investigasi Siber</p>
+                </div>
+                <button onclick="closeDebriefing()" class="text-slate-400 hover:text-red-500 font-bold text-2xl leading-none">×</button>
             </div>
-            <div class="flex-grow bg-[#0B0E14] p-6 md:p-10 overflow-y-auto text-slate-300 font-mono-cyber leading-relaxed">
-                <h4 class="text-xl text-white font-bold mb-4 border-b border-slate-700 pb-2">Teori Pragmatik dalam Penipuan Cyber</h4>
+            
+            <!-- Navigasi Tab Jurnal Materi -->
+            <div class="flex flex-wrap bg-[#12161F] border-b border-slate-800 font-mono-cyber text-[11px] px-4 pt-2 gap-1">
+                <button onclick="switchJurnalTab('deiksis')" id="jtab-deiksis" class="px-3 py-2 rounded-t-lg bg-blue-900/40 text-blue-300 border-t border-x border-blue-500/50 font-bold transition-all">1. Deiksis & Jarak</button>
+                <button onclick="switchJurnalTab('praanggapan')" id="jtab-praanggapan" class="px-3 py-2 rounded-t-lg text-slate-400 hover:text-white transition-all">2. Praanggapan</button>
+                <button onclick="switchJurnalTab('implikatur')" id="jtab-implikatur" class="px-3 py-2 rounded-t-lg text-slate-400 hover:text-white transition-all">3. Implikatur Grice</button>
+                <button onclick="switchJurnalTab('tindaktutur')" id="jtab-tindaktutur" class="px-3 py-2 rounded-t-lg text-slate-400 hover:text-white transition-all">4. Tindak Tutur (Austin & Searle)</button>
+                <button onclick="switchJurnalTab('taklangsung')" id="jtab-taklangsung" class="px-3 py-2 rounded-t-lg text-slate-400 hover:text-white transition-all">5. Tak Langsung & Hedging</button>
+            </div>
+
+            <div class="flex-grow bg-[#0B0E14] p-6 md:p-8 overflow-y-auto text-slate-300 font-mono-cyber leading-relaxed">
                 
-                <div class="space-y-6">
-                    <div>
-                        <h5 class="text-blue-300 font-bold text-lg mb-2">1. Deiksis (Sosial, Ruang & Waktu)</h5>
-                        <p class="text-sm">Deiksis merujuk pada kata yang maknanya bergantung pada konteks (siapa, kapan, di mana). Penipu sering menggunakan <span class="text-blue-200">Deiksis Sosial Palsu</span> untuk membangun otoritas dan mengintimidasi korban.</p>
-                        <p class="text-sm mt-2 bg-blue-900/20 p-3 rounded border border-blue-900/50"><span class="text-blue-400 font-bold">Contoh:</span> Menggunakan "Kami dari kepolisian pusat" secara mendesak. Institusi resmi biasanya menggunakan bahasa baku, formal, dan sesuai SOP, bukan menekan.</p>
+                <!-- TAB 1: DEIKSIS & JARAK -->
+                <div id="jcontent-deiksis" class="space-y-5 fade-in">
+                    <div class="border-b border-slate-700 pb-3">
+                        <span class="text-[10px] bg-blue-950 text-blue-400 px-2 py-1 rounded border border-blue-800">MATERI P02: DEIKSIS & JARAK</span>
+                        <h4 class="text-xl text-white font-bold mt-2">Deiksis, Pusat Deiktik & Tiga Wajah Jarak</h4>
+                    </div>
+                    
+                    <p class="text-sm"><strong class="text-blue-300">Konsep Dasar:</strong> Deiksis (<i>deiktikos</i> = menunjuk) adalah unsur bahasa yang rujukannya bergantung penuh pada koordinat situasi tutur atau <b>Pusat Deiktik</b> (<i>Saya &bull; Di Sini &bull; Sekarang</i>). Tanpa mengetahui siapa yang bicara, di mana, dan kapan, kata penunjuk berputar tak tentu arah.</p>
+
+                    <div class="grid md:grid-cols-2 gap-3 text-xs">
+                        <div class="bg-slate-900/60 p-3 rounded border border-slate-800">
+                            <strong class="text-cyan-400 block mb-1">Lima Jenis Penanda Deiksis:</strong>
+                            <ul class="list-disc pl-4 space-y-1 text-slate-300">
+                                <li><b>Persona:</b> saya/aku, kamu/Anda, kita/kami (institusional).</li>
+                                <li><b>Ruang:</b> ini/di sini (proksimal/dekat) vs itu/di sana (distal/jauh).</li>
+                                <li><b>Waktu:</b> sekarang, tadi, kemarin, besok, dalam 5 menit.</li>
+                                <li><b>Wacana:</b> "lampiran ini", "seperti tadi disampaikan".</li>
+                                <li><b>Sosial:</b> Sapaan hierarkis (Bapak/Ibu &gt; Anda &gt; kamu &gt; sayang).</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-900/60 p-3 rounded border border-slate-800">
+                            <strong class="text-cyan-400 block mb-1">Tiga Wajah Jarak (Proksimal - Distal):</strong>
+                            <ul class="list-disc pl-4 space-y-1 text-slate-300">
+                                <li><b>Jarak Fisik:</b> Dekat dengan penutur (<i>di sini</i>) vs jauh (<i>di sana</i>).</li>
+                                <li><b>Jarak Temporal:</b> Waktu kini (<i>sekarang</i>) vs waktu lampau/nanti.</li>
+                                <li><b>Jarak Psikologis:</b> Memakai bentuk distal (<i>"masalah itu"</i>) untuk menjauhkan diri dari tanggung jawab, atau proksimal untuk menekan korban.</li>
+                            </ul>
+                        </div>
                     </div>
 
-                    <div>
-                        <h5 class="text-red-300 font-bold text-lg mb-2">2. Implikatur (Makna Tersirat & Mendesak)</h5>
-                        <p class="text-sm">Implikatur adalah makna terselubung di balik sebuah tuturan. Penipu sering menciptakan "False Urgency" (keadaan darurat palsu) yang memunculkan implikatur bahwa korban harus bertindak cepat tanpa berpikir rasional.</p>
-                        <p class="text-sm mt-2 bg-red-900/20 p-3 rounded border border-red-900/50"><span class="text-red-400 font-bold">Contoh:</span> "Jika tidak diklik dalam 5 menit, rekening hangus." Implikatur: Jangan berpikir panjang, turuti perintah sekarang atau Anda rugi.</p>
-                    </div>
-
-                    <div>
-                        <h5 class="text-green-300 font-bold text-lg mb-2">3. Praanggapan (Presupposition)</h5>
-                        <p class="text-sm">Praanggapan adalah asumsi dasar yang disisipkan penipu agar dianggap sebagai fakta yang sudah pasti benar oleh korban. Tujuannya membuat kebohongan menjadi premis awal yang tak terbantahkan.</p>
-                        <p class="text-sm mt-2 bg-green-900/20 p-3 rounded border border-green-900/50"><span class="text-green-400 font-bold">Contoh:</span> "Untuk mencairkan dana undian 50 juta Anda, silakan transfer pajak..." Praanggapan: Anda SUDAH memenangkan 50 juta (padahal Anda tidak pernah ikut undian).</p>
-                    </div>
-
-                    <div>
-                        <h5 class="text-purple-300 font-bold text-lg mb-2">4. Tindak Tutur (Speech Acts) & Hedging</h5>
-                        <p class="text-sm">Tindak tutur adalah tindakan yang dilakukan melalui ucapan. Penipu sering mencampur <span class="text-purple-200">Tindak Tutur Direktif</span> (memerintah) dengan <span class="text-purple-200">Hedging</span> (penanda keraguan) agar terdengar natural namun tetap menjebak.</p>
-                        <p class="text-sm mt-2 bg-purple-900/20 p-3 rounded border border-purple-900/50"><span class="text-purple-400 font-bold">Contoh:</span> "Sepertinya akun Anda diretas, segera konfirmasi PIN." Ini adalah perintah langsung yang disamarkan dengan keraguan (hedging) untuk memicu kepanikan perlahan.</p>
+                    <div class="bg-blue-950/30 border border-blue-800/60 p-4 rounded-lg">
+                        <h5 class="text-blue-300 font-bold text-sm mb-2 flex items-center gap-2">🔍 APLIKASI FORENSIK PADA KASUS GAME:</h5>
+                        <ul class="space-y-2 text-xs">
+                            <li><span class="text-cyan-400 font-bold">[Kasus Phishing APK Kurir]:</span> Pelaku memakai <b>Deiksis Persona Institusional Palsu</b> (<i>"Kami dari J&T Express"</i>) dan <b>Deiksis Ruang Palsu</b> (<i>"Kurir sudah di depan rumah"</i>) untuk memanipulasi pusat deiktik korban.</li>
+                            <li><span class="text-cyan-400 font-bold">[Kasus Romance Scam]:</span> Manipulasi <b>Deiksis Sosial</b> menggunakan sapaan intim secara prematur (<i>"Sayang", "Honey"</i>) guna menghapus jarak sosial dan membangun kedekatan emosional palsu.</li>
+                            <li><span class="text-cyan-400 font-bold">[Kasus Undian Palsu]:</span> Eksploitasi <b>Deiksis Waktu</b> (<i>"klik tautan ini dalam 5 menit"</i>) dan <b>Deiksis Wacana</b> (<i>"link biru di bawah"</i>) dalam komunikasi tertulis yang memutus konteks verifikasi.</li>
+                        </ul>
                     </div>
                 </div>
+
+                <!-- TAB 2: PRAANGGAPAN -->
+                <div id="jcontent-praanggapan" class="hidden space-y-5 fade-in">
+                    <div class="border-b border-slate-700 pb-3">
+                        <span class="text-[10px] bg-green-950 text-green-400 px-2 py-1 rounded border border-green-800">MATERI P03: PRAANGGAPAN (PRESUPPOSITION)</span>
+                        <h4 class="text-xl text-white font-bold mt-2">Asumsi Tersembunyi & Pemicu Praanggapan</h4>
+                    </div>
+
+                    <p class="text-sm"><strong class="text-green-300">Konsep Dasar:</strong> Praanggapan (Yule, 1996) adalah asumsi latar yang dianggap sudah pasti benar oleh penutur sebelum mengujarkan kalimat. Ciri utamanya adalah <b>bertahan di bawah negasi</b> (<i>constancy under negation</i>)—meski kalimatnya dinegasikan, asumsinya tetap hidup.</p>
+
+                    <div class="bg-slate-900/60 p-4 rounded border border-slate-800 text-xs">
+                        <strong class="text-green-400 block mb-2">Enam Keluarga Pemicu Praanggapan (Levinson):</strong>
+                        <div class="grid md:grid-cols-2 gap-2">
+                            <div>1. <b>Definit/Posesif:</b> <i>"Paket Anda tertahan"</i> &rarr; Anda punya paket.</div>
+                            <div>2. <b>Verba Faktif:</b> <i>"Anda sadar akun diretas"</i> &rarr; Akun benar diretas.</div>
+                            <div>3. <b>Perubahan Keadaan:</b> <i>"Berhenti menunda"</i> &rarr; Sebelumnya menunda.</div>
+                            <div>4. <b>Iteratif:</b> <i>"Tagihan muncul lagi"</i> &rarr; Pernah ada tagihan.</div>
+                            <div>5. <b>Klausa Temporal:</b> <i>"Sejak saldo masuk..."</i> &rarr; Saldo benar masuk.</div>
+                            <div>6. <b>Pertanyaan-Wh:</b> <i>"Kapan Anda kembalikan uangnya?"</i> &rarr; Anda memegang uangnya.</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-950/30 border border-green-800/60 p-4 rounded-lg">
+                        <h5 class="text-green-300 font-bold text-sm mb-2 flex items-center gap-2">🔍 APLIKASI FORENSIK PADA KASUS GAME:</h5>
+                        <ul class="space-y-2 text-xs">
+                            <li><span class="text-green-400 font-bold">[Kasus Salah Transfer]:</span> Kalimat <i>"Saldo Anda pasti nambah 5 juta kan?"</i> menggunakan <b>pemicu definit/posesif & perubahan keadaan</b> untuk menyelundupkan asumsi palsu bahwa dana benar-benar masuk ke rekening korban.</li>
+                            <li><span class="text-green-400 font-bold">[Kasus Lowongan Kerja Palsu]:</span> <i>"Tingkatkan level VIP Anda untuk mencairkan komisi"</i> mempraanggapkan bahwa uang komisi benar-benar ada (padahal fiktif) sehingga korban rela menyetor deposit.</li>
+                            <li><span class="text-green-400 font-bold">[Kasus Undian Palsu]:</span> <i>"Pajak pemenang mohon ditransfer lebih dulu"</i> mempraanggapkan korban sah memenangkan hadiah, sehingga korban tidak lagi mempertanyakan keaslian undian.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- TAB 3: IMPLIKATUR PERCAKAPAN -->
+                <div id="jcontent-implikatur" class="hidden space-y-5 fade-in">
+                    <div class="border-b border-slate-700 pb-3">
+                        <span class="text-[10px] bg-red-950 text-red-400 px-2 py-1 rounded border border-red-800">MATERI P04: IMPLIKATUR PERCAKAPAN (GRICE)</span>
+                        <h4 class="text-xl text-white font-bold mt-2">Prinsip Kerja Sama, Empat Maksim & Flouting</h4>
+                    </div>
+
+                    <p class="text-sm"><strong class="text-red-300">Konsep Dasar:</strong> Menurut Grice (1975), percakapan diatur oleh Prinsip Kerja Sama. <b>Implikatur</b> adalah makna tambahan yang disimpulkan pendengar melampaui makna harfiah, yang lahir ketika penutur melanggar maksim secara mencolok (<i>flouting</i>) atau diam-diam (<i>violating</i>/menipu). Berbeda dengan praanggapan, implikatur bersifat <b>dapat dibatalkan (<i>cancellable</i>)</b> dan bergantung konteks.</p>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                        <div class="bg-slate-900/60 p-3 rounded border border-slate-800">
+                            <strong class="text-amber-400 block">1. Kuantitas</strong>
+                            <span class="text-[11px] text-slate-400">Beri informasi secukupnya (tidak kurang/lebih).</span>
+                        </div>
+                        <div class="bg-slate-900/60 p-3 rounded border border-slate-800">
+                            <strong class="text-amber-400 block">2. Kualitas</strong>
+                            <span class="text-[11px] text-slate-400">Katakan yang benar & memiliki bukti memadai.</span>
+                        </div>
+                        <div class="bg-slate-900/60 p-3 rounded border border-slate-800">
+                            <strong class="text-amber-400 block">3. Relasi</strong>
+                            <span class="text-[11px] text-slate-400">Ujaran harus relevan dengan topik pembicaraan.</span>
+                        </div>
+                        <div class="bg-slate-900/60 p-3 rounded border border-slate-800">
+                            <strong class="text-amber-400 block">4. Cara</strong>
+                            <span class="text-[11px] text-slate-400">Jelas, ringkas, runtut, hindari ketaksaan/ambigu.</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-950/30 border border-red-800/60 p-4 rounded-lg">
+                        <h5 class="text-red-300 font-bold text-sm mb-2 flex items-center gap-2">🔍 APLIKASI FORENSIK PADA KASUS GAME:</h5>
+                        <ul class="space-y-2 text-xs">
+                            <li><span class="text-red-400 font-bold">[Kasus Phishing APK Kurir]:</span> Penipu melanggar <b>Maksim Kualitas</b> (mengirim file <code>.apk</code> sebagai foto resi) dan <b>Maksim Kuantitas</b> (saat ditanya paket apa, hanya menjawab <i>"cek saja di aplikasi"</i>) agar korban menginstal malware.</li>
+                            <li><span class="text-red-400 font-bold">[Kasus Lowongan Kerja Palsu]:</span> Pelanggaran <b>Maksim Kualitas</b> lewat bukti transfer palsu di grup Telegram (<i>Social Proof</i>) dan janji pengembalian deposit beserta profit.</li>
+                            <li><span class="text-red-400 font-bold">[Semua Kasus - False Urgency]:</span> Kalimat <i>"Jika tidak diklik, rekening hangus"</i> memunculkan implikatur ancaman: <i>"Jangan berpikir rasional, patuhi perintah sekarang atau Anda rugi besar."</i></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- TAB 4: TINDAK TUTUR AUSTIN & SEARLE -->
+                <div id="jcontent-tindaktutur" class="hidden space-y-5 fade-in">
+                    <div class="border-b border-slate-700 pb-3">
+                        <span class="text-[10px] bg-purple-950 text-purple-400 px-2 py-1 rounded border border-purple-800">MATERI P05 & P06: TINDAK TUTUR (AUSTIN & SEARLE)</span>
+                        <h4 class="text-xl text-white font-bold mt-2">Lokusi-Ilokusi-Perlokusi, Felicity Conditions & 5 Kategori Searle</h4>
+                    </div>
+
+                    <p class="text-sm"><strong class="text-purple-300">Teori Austin (1962):</strong> Mengujarkan adalah melakukan tindakan (<i>performatif</i>). Satu ujaran memuat tiga lapis serentak: <b>Lokusi</b> (bunyi & makna harfiah), <b>Ilokusi</b> (daya/maksud tindakan), dan <b>Perlokusi</b> (efek nyata pada pendengar seperti takut/terbujuk). Agar sah, tindak tutur membutuhkan <b>Kondisi Keberhasilan (<i>Felicity Conditions</i>)</b> berupa kewenangan dan prosedur yang tepat.</p>
+
+                    <div class="bg-slate-900/60 p-3 rounded border border-slate-800 text-xs">
+                        <strong class="text-purple-400 block mb-1">Lima Kategori Ilokusi Searle (1976):</strong>
+                        <div class="grid md:grid-cols-3 gap-2">
+                            <div>&bull; <b>Asertif:</b> Melaporkan/menyatakan fakta (<i>Kata &rarr; Dunia</i>).</div>
+                            <div>&bull; <b>Direktif:</b> Meminta/memerintah (<i>Dunia &rarr; Kata</i>).</div>
+                            <div>&bull; <b>Komisif:</b> Berjanji/mengancam (<i>Dunia &rarr; Kata</i>).</div>
+                            <div>&bull; <b>Ekspresif:</b> Terima kasih, maaf, mengeluh.</div>
+                            <div class="md:col-span-2">&bull; <b>Deklaratif:</b> Mengubah status dunia (memecat, memblokir) &mdash; <i>syarat mutlak: otoritas resmi</i>.</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-950/30 border border-purple-800/60 p-4 rounded-lg">
+                        <h5 class="text-purple-300 font-bold text-sm mb-2 flex items-center gap-2">🔍 APLIKASI FORENSIK PADA KASUS GAME:</h5>
+                        <ul class="space-y-2 text-xs">
+                            <li><span class="text-purple-400 font-bold">[Kegagalan Felicity Conditions]:</span> Penipu sering memakai tindak tutur <b>Deklaratif palsu</b> (<i>"Rekening Anda kami bekukan sekarang"</i>), padahal secara pragmatik tuturan itu gagal (<i>infelicitous</i>) karena pelaku tidak memiliki otoritas institusional.</li>
+                            <li><span class="text-purple-400 font-bold">[Kasus Salah Transfer]:</span> Pelaku memadukan <b>Ekspresif manipulatif</b> (tangisan/memohon) dan <b>Komisif ancaman</b> (<i>"Saya lapor polisi jika tidak dikembalikan!"</i>) untuk memicu efek <b>Perlokusi</b> berupa kepanikan korban.</li>
+                            <li><span class="text-purple-400 font-bold">[Kasus Romance Scam]:</span> Eksploitasi tindak tutur <b>Komisif</b> (<i>"Aku berjanji akan menikahimu bulan depan"</i>) untuk menjerat korban secara psikologis sebelum melakukan tindak <b>Direktif</b> (meminta transfer uang).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- TAB 5: TINDAK TUTUR TAK LANGSUNG & HEDGING -->
+                <div id="jcontent-taklangsung" class="hidden space-y-5 fade-in">
+                    <div class="border-b border-slate-700 pb-3">
+                        <span class="text-[10px] bg-amber-950 text-amber-400 px-2 py-1 rounded border border-amber-800">MATERI P07: TINDAK TUTUR TAK LANGSUNG & HEDGING</span>
+                        <h4 class="text-xl text-white font-bold mt-2">Mesin Dua-Ilokusi, Ekonomi vs Muka & Penanda Keraguan</h4>
+                    </div>
+
+                    <p class="text-sm"><strong class="text-amber-300">Konsep Dasar:</strong> Tindak tutur tak langsung terjadi saat bentuk kalimat (deklaratif/interogatif) tidak selaras dengan fungsinya (direktif/perintah). Menurut Searle, pendengar menangkap <b>ilokusi primer</b> (maksud sebenarnya) melalui <b>ilokusi sekunder</b> (makna harfiah). Penutur memilih bentuk tak langsung demi menjaga <b>Muka (<i>Face</i>)</b> mitra tutur dibanding prinsip <b>Ekonomi</b> kata.</p>
+
+                    <div class="bg-slate-900/60 p-3 rounded border border-slate-800 text-xs space-y-1">
+                        <strong class="text-amber-400 block">Strategi Ketaklangsungan & Hedging dalam Penipuan:</strong>
+                        <p>&bull; <b>Deklaratif &rarr; Direktif Terselubung:</b> Menyampaikan masalah seolah-olah fakta biasa agar korban merasa terdorong bertindak atas kemauannya sendiri.</p>
+                        <p>&bull; <b>Hedging (Penanda Keraguan):</b> Penggunaan kata <i>"sepertinya", "kemungkinan besar", "mungkin"</i> untuk menyamarkan perintah atau kebohongan agar terdengar natural, tidak terlalu memaksa di awal, namun tetap menanamkan rasa cemas.</p>
+                    </div>
+
+                    <div class="bg-amber-950/30 border border-amber-800/60 p-4 rounded-lg">
+                        <h5 class="text-amber-300 font-bold text-sm mb-2 flex items-center gap-2">🔍 APLIKASI FORENSIK PADA KASUS GAME:</h5>
+                        <ul class="space-y-2 text-xs">
+                            <li><span class="text-amber-400 font-bold">[Log Chat Utama & Semua Kasus]:</span> Kalimat <i>"Sepertinya akun M-Banking Anda sedang diakses orang lain"</i> menggunakan bentuk <b>deklaratif dengan hedging</b> (ilokusi sekunder: memberi tahu), namun memiliki <b>ilokusi primer direktif</b> agar korban segera menyerahkan kode OTP/PIN.</li>
+                            <li><span class="text-amber-400 font-bold">[Kasus Romance Scam]:</span> <i>"Sepertinya agen bea cukai menahan paket hadiahku di bandara"</i> &mdash; pernyataan deklaratif tak langsung yang berfungsi sebagai permintaan (direktif halus) agar korban menawarkan diri membayar uang tebusan.</li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
-            <div class="p-5 border-t border-blue-900 bg-[#0a0c10] text-center">
-                <button id="btn-recharge-energy" onclick="rechargeEnergy()" class="bg-blue-600 text-white font-bold font-mono-cyber px-8 py-3 rounded-xl hover:bg-blue-500 btn-3d shadow-[0_0_15px_rgba(59,130,246,0.4)] min-w-[250px] transition-all">BACA & ISI ENERGI (+1)</button>
+            <div class="p-4 border-t border-blue-900 bg-[#0a0c10] flex justify-between items-center">
+                <!-- Sumber dihilangkan dari sini -->
+                <div></div>
+                <button id="btn-recharge-energy" onclick="rechargeEnergy()" class="bg-blue-600 text-white font-bold font-mono-cyber px-8 py-3 rounded-xl hover:bg-blue-500 btn-3d shadow-[0_0_15px_rgba(59,130,246,0.4)] min-w-[250px] transition-all ml-auto">BACA & ISI ENERGI (+1)</button>
             </div>
         </div>
     </div>
@@ -821,6 +1004,81 @@
         </div>
     </div>
 
+    <!-- NEW: Decryption / Bypass Firewall Modal dengan Word Search -->
+    <div id="decrypt-modal" class="hidden fixed inset-0 z-[300] bg-black/95 flex flex-col items-center justify-center p-4 fade-in">
+        <div class="w-full max-w-sm glass-panel rounded-xl overflow-hidden slide-up flex flex-col border border-pink-900 text-center relative transition-all duration-100" id="decrypt-modal-content">
+            <div class="p-4 border-b border-pink-900 bg-pink-950/30">
+                <h3 class="font-bold text-pink-500 font-mono-cyber text-lg flex items-center justify-center gap-2">
+                    🔐 BYPASS FIREWALL
+                </h3>
+            </div>
+            <div class="p-6 flex flex-col items-center">
+                <!-- Word Search Phase 1 -->
+                <div id="word-search-section" class="bg-black/80 border border-teal-700 p-4 rounded w-full mb-4 shadow-inner">
+                    <div class="text-[10px] text-teal-400 font-mono-cyber mb-2">TAHAP 1: CARI KATA KUNCI PRAGMATIK</div>
+                    <div id="word-search-text" class="text-sm text-slate-300 font-serif leading-relaxed flex flex-wrap gap-1 justify-center">
+                        <!-- Clickable words injected via JS -->
+                    </div>
+                </div>
+
+                <p class="text-slate-300 font-mono-cyber mb-4 text-xs" id="pin-instruction">Tahap 2 (Terkunci): Masukkan 4-digit PIN akses server.</p>
+                
+                <div class="flex gap-2 mb-6 transition-opacity duration-500 opacity-30 pointer-events-none" id="pin-display">
+                    <!-- Injected via JS -->
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 w-48 mx-auto mb-6 transition-opacity duration-500 opacity-30 pointer-events-none" id="numpad-container">
+                    <!-- Injected via JS -->
+                </div>
+
+                <div class="bg-black/50 border border-pink-900 p-3 rounded w-full">
+                    <div class="text-[10px] text-pink-400 font-mono-cyber mb-1">PETUNJUK DEKRIPSI:</div>
+                    <div id="decrypt-clue" class="text-xs text-slate-200 font-mono-cyber leading-relaxed"></div>
+                </div>
+            </div>
+            <div class="p-3 bg-[#0a0c10] border-t border-pink-900/50 flex justify-between items-center">
+                <button onclick="requestTeamClue()" id="btn-ask-team" class="text-green-400 hover:text-white text-[10px] font-mono-cyber uppercase border border-green-500 bg-green-900/30 px-3 py-2 rounded transition-colors btn-3d hidden font-bold">💬 Tanya Agen Tim</button>
+                <button onclick="closeDecryption()" class="text-slate-500 hover:text-white text-xs font-mono-cyber uppercase underline ml-auto">Batal & Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Visual Analysis / Hidden Object Modal -->
+    <div id="visual-modal" class="hidden fixed inset-0 z-[300] bg-black/95 flex flex-col items-center justify-center p-4 fade-in">
+        <div class="w-full max-w-2xl glass-panel rounded-xl overflow-hidden slide-up flex flex-col border border-teal-900 text-center relative transition-all duration-100" id="visual-modal-content">
+            <div class="p-4 border-b border-teal-900 bg-teal-950/30 flex justify-between items-center">
+                <h3 class="font-bold text-teal-400 font-mono-cyber text-lg flex items-center justify-center gap-2">
+                    🔎 ANALISIS VISUAL TKP
+                </h3>
+                <button onclick="closeVisualAnalysis()" class="text-slate-400 hover:text-red-500 font-bold text-xl leading-none">×</button>
+            </div>
+            <div class="p-6 flex flex-col items-center">
+                <p class="text-slate-300 font-mono-cyber mb-4 text-xs" id="visual-instruction">Ketelitian diperlukan. Temukan <span class="text-teal-400 font-bold">Alat Komunikasi Pelaku (Ponsel/Flashdisk)</span> yang tersembunyi di ruangan ini dengan mengkliknya!</p>
+                
+                <div class="relative w-full aspect-video bg-[#1a1c23] border-2 border-slate-700 rounded-lg overflow-hidden cursor-crosshair shadow-[0_0_20px_rgba(20,184,166,0.1)] group">
+                    <!-- Placeholder Background for Room/Scene -->
+                    <div class="w-full h-full bg-[url('https://placehold.co/800x450/1a1c23/444?text=Rekaman+CCTV+Ruangan+Kosong')] bg-cover opacity-70 transition-all group-hover:scale-105 duration-700"></div>
+                    
+                    <!-- Random Noise/Scanline on top to make it look like a security cam -->
+                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+')] pointer-events-none opacity-50"></div>
+                    
+                    <!-- Hitbox for Hidden Object (Position is randomized in JS) -->
+                    <div id="hidden-object-target" onclick="findHiddenObject()" class="absolute w-12 h-12 rounded-full border-2 border-transparent hover:border-white/50 hover:bg-white/10 transition-colors flex items-center justify-center cursor-pointer z-10">
+                        <span class="text-lg opacity-40 hover:opacity-100 transform -rotate-12 drop-shadow-xl select-none" id="hidden-object-icon">📱</span>
+                    </div>
+                    
+                    <div id="visual-feedback-overlay" class="hidden absolute inset-0 bg-teal-900/80 backdrop-blur-sm flex-col items-center justify-center z-20 transition-all">
+                        <div class="text-6xl mb-4 drop-shadow-[0_0_20px_rgba(20,184,166,1)] animate-bounce">🎯</div>
+                        <div class="text-2xl font-bold font-mono-cyber text-teal-300 drop-shadow-md">BUKTI DITEMUKAN!</div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 bg-[#0a0c10] border-t border-teal-900/50 flex justify-end">
+                <button onclick="closeVisualAnalysis()" class="text-slate-500 hover:text-white text-xs font-mono-cyber uppercase underline">Batal & Tutup</button>
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPT LOGIC -->
     <script>
         // --- DATABASE & STATE ---
@@ -848,6 +1106,11 @@
             flashcardIndex: 0,
             witness1Interviewed: false,
             witness2Interviewed: false,
+            decryptSolved: false,
+            visualSolved: false,
+            currentPin: '',
+            targetPin: '0000',
+            keywordSolved: false, // Ditambahkan untuk word search
             unlockedCaseLevel: 1,
             activeCaseId: 1,
             avatarIdx: 0
@@ -977,6 +1240,15 @@
                 { title: "KARTU UNDIAN 4", text: "Ini dari customer service pusat. Jika link pembaruan tarif tidak diklik, mulai malam ini saldo akan dipotong 150rb per bulan." },
                 { title: "KARTU UNDIAN 5", text: "Kami beri waktu 10 menit untuk melunasi biaya administrasi. Jika lewat, hadiah mobil mewah akan diserahkan ke negara." }
             ]
+        ];
+        
+        // --- DATA PUZZLE BYPASS FIREWALL ---
+        const decryptPuzzles = [
+            { text: "Pelaku memanipulasi jarak sosial melalui penggunaan penanda deiksis secara agresif.", target: "deiksis" },
+            { text: "Kalimat tersebut menyelundupkan asumsi tersembunyi atau praanggapan fiktif.", target: "praanggapan" },
+            { text: "Ancaman palsu itu lahir dari pelanggaran maksim yang menghasilkan implikatur.", target: "implikatur" },
+            { text: "Memaksa korban mentransfer uang adalah bentuk tindak tutur direktif.", target: "direktif" },
+            { text: "Kata sepertinya berfungsi sebagai hedging untuk menyamarkan kebohongan.", target: "hedging" }
         ];
 
         // --- CORE GAME DATA & FUNCTIONS ---
@@ -1206,27 +1478,28 @@
 
         function confirmExit() { document.getElementById('exit-modal').classList.remove('hidden'); }
         function closeConfirmExit() { document.getElementById('exit-modal').classList.add('hidden'); }
-        function executeExit() {
-            closeConfirmExit();
-            document.getElementById('game-main-ui').classList.add('hidden');
-            document.getElementById('cases-menu-screen').classList.remove('hidden');
-            document.getElementById('phone-toggle-btn').classList.add('hidden');
-            document.getElementById('map-toggle-btn').classList.add('hidden');
-            document.getElementById('tutorial-toggle-btn').classList.add('hidden');
-            showNotification("Investigasi Dihentikan", "warning");
+        
+        function openDebriefing() { 
+            document.getElementById('jurnal-modal').classList.remove('hidden'); 
+            switchJurnalTab('deiksis');
         }
-
-        function returnToMenu() {
-            document.getElementById('win-modal').classList.add('hidden');
-            document.getElementById('game-main-ui').classList.add('hidden');
-            document.getElementById('phone-toggle-btn').classList.add('hidden');
-            document.getElementById('map-toggle-btn').classList.add('hidden');
-            document.getElementById('tutorial-toggle-btn').classList.add('hidden');
-            showCasesMenu();
-        }
-
-        function openDebriefing() { document.getElementById('jurnal-modal').classList.remove('hidden'); }
         function closeDebriefing() { document.getElementById('jurnal-modal').classList.add('hidden'); }
+        
+        function switchJurnalTab(tabName) {
+            const tabs = ['deiksis', 'praanggapan', 'implikatur', 'tindaktutur', 'taklangsung'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`jtab-${t}`);
+                const content = document.getElementById(`jcontent-${t}`);
+                if (t === tabName) {
+                    btn.className = "px-3 py-2 rounded-t-lg bg-blue-900/40 text-blue-300 border-t border-x border-blue-500/50 font-bold transition-all";
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = "px-3 py-2 rounded-t-lg text-slate-400 hover:text-white transition-all";
+                    content.classList.add('hidden');
+                }
+            });
+        }
+
         function rechargeEnergy() {
             const btn = document.getElementById('btn-recharge-energy');
             if(state.energy < state.maxEnergy) {
@@ -1341,7 +1614,13 @@
                 showNotification("Pesan ini netral. Tidak ada penanda anomali.", "warning");
             } else if(msg.type === type) {
                 msg.analyzed = true;
-                addClue(1, msg.id, msg.text, msg.type === 'uncertainty' ? 'Hedging' : 'Tipuan / Deiksis Palsu', 'Teks diverifikasi memiliki anomali pragmatik.');
+                
+                // Menghubungkan penjelasan dengan Jurnal Materi
+                const explanation = msg.type === 'uncertainty' 
+                    ? "Materi P07 (Tindak Tutur Tak Langsung & Hedging): Penanda 'Hedging' terdeteksi. Pelaku menggunakan ketidakpastian secara manipulatif untuk menyamarkan ilokusi paksaan, membuat ancaman seolah-olah adalah prediksi rasional." 
+                    : "Materi P02 & P04 (Deiksis & Implikatur): Terjadi pelanggaran Maksim Kualitas dan manipulasi Deiksis Persona ('Kami dari...'). Pelaku memalsukan identitas institusional untuk menciptakan False Urgency dan menekan logika korban.";
+                
+                addClue(1, msg.id, msg.text, msg.type === 'uncertainty' ? 'Hedging' : 'Tipuan / Deiksis Palsu', explanation);
                 showNotification("Analisis Tepat! Bukti Diamankan.", "success");
             } else {
                 showNotification("Analisis Keliru! Pelajari lagi konteks kalimatnya.", "error");
@@ -1363,6 +1642,9 @@
             state.flashcardIndex = 0;
             state.witness1Interviewed = false;
             state.witness2Interviewed = false;
+            state.decryptSolved = false;
+            state.visualSolved = false;
+            state.currentPin = '';
             
             chatScript = [
                 { id: 'm1', text: "Selamat siang! Nomor Anda terpilih memenangkan undian Rp50 Juta.", type: 'neutral', analyzed: false, highlightWords: [] },
@@ -1488,6 +1770,28 @@
             // Update button progress counters
             safeSetText('quiz-progress-btn', `${state.quizIndex}/10`);
             safeSetText('flashcard-progress-btn', `${state.flashcardIndex}/5`);
+            
+            // Update Decrypt Status
+            if (state.decryptSolved) {
+                safeSetText('decrypt-status', 'UNLOCKED');
+                const el = document.getElementById('decrypt-status');
+                if(el) el.className = 'text-green-400 font-bold';
+            } else {
+                safeSetText('decrypt-status', 'LOCKED');
+                const el = document.getElementById('decrypt-status');
+                if(el) el.className = 'text-pink-400 font-bold';
+            }
+
+            // Update Visual Status
+            if (state.visualSolved) {
+                safeSetText('visual-status', '1/1 (SELESAI)');
+                const el = document.getElementById('visual-status');
+                if(el) el.className = 'text-green-400 font-bold';
+            } else {
+                safeSetText('visual-status', '0/1');
+                const el = document.getElementById('visual-status');
+                if(el) el.className = 'text-teal-400 font-bold';
+            }
 
             // Cek Menang
             if(state.cluesFound >= state.totalClues && !state.caseSolved) {
@@ -1532,18 +1836,20 @@
             const chatTab = document.getElementById('tab-chat');
             const teamTab = document.getElementById('team-tab-btn');
             
+            const teamHidden = state.gameMode === 'together' ? '' : 'hidden';
+            
             if(tab === 'chat') {
                 document.getElementById('chat-simulator').classList.remove('hidden');
                 document.getElementById('team-discussion').classList.add('hidden');
                 
-                chatTab.className = "flex-1 py-3 text-cyan-400 border-b-2 border-cyan-400 bg-cyan-900/10 font-bold transition-all";
-                teamTab.className = "flex-1 py-3 text-slate-500 hover:text-slate-300 transition-all border-b border-transparent";
+                chatTab.className = "flex-1 py-3 text-cyan-400 border-b-2 border-cyan-400 bg-cyan-900/10 font-bold transition-all w-full";
+                teamTab.className = `flex-1 py-3 text-slate-500 hover:text-slate-300 transition-all border-b-2 border-transparent ${teamHidden}`;
             } else {
                 document.getElementById('chat-simulator').classList.add('hidden');
                 document.getElementById('team-discussion').classList.remove('hidden');
                 
-                teamTab.className = "flex-1 py-3 text-green-400 border-b-2 border-green-400 bg-green-900/10 font-bold transition-all";
-                chatTab.className = "flex-1 py-3 text-slate-500 hover:text-slate-300 transition-all border-b border-transparent";
+                teamTab.className = `flex-1 py-3 text-green-400 border-b-2 border-green-400 bg-green-900/10 font-bold transition-all w-full ${teamHidden}`;
+                chatTab.className = "flex-1 py-3 text-slate-500 hover:text-slate-300 transition-all border-b-2 border-transparent";
             }
         }
 
@@ -1788,10 +2094,10 @@
                 speakText(witnessText, ttsPitch, ttsRate, () => {
                     if(id === 1) {
                         state.witness1Interviewed = true;
-                        addClue(1, `witness_1_${Date.now()}`, "Kesaksian Korban 1", "Kesaksian Verbal", "Mendukung adanya unsur paksaan dan ketakutan.");
+                        addClue(1, `witness_1_${Date.now()}`, "Kesaksian Korban 1", "Kesaksian Verbal", "Materi P05-P06 (Tindak Tutur): Penggunaan Tindak Tutur Komisif (Ancaman penyitaan) tanpa Felicity Conditions yang sah. Karena diucapkan oleh penipu yang tidak berwenang, tindak tutur ini cacat, namun sukses memicu efek perlokusi berupa kepanikan korban.");
                     } else {
                         state.witness2Interviewed = true;
-                        addClue(1, `witness_2_${Date.now()}`, "Kesaksian Korban 2", "Kesaksian Verbal", "Mendukung penemuan Deiksis Sosial palsu.");
+                        addClue(1, `witness_2_${Date.now()}`, "Kesaksian Korban 2", "Kesaksian Verbal", "Materi P02 (Deiksis): Manipulasi Deiksis Sosial dan Persona. Pelaku menggunakan kata ganti institusional ('Kami', 'Pihak Instansi') dari nomor pribadi untuk memperdaya korban dengan otoritas fiktif (mengurangi jarak sosial secara paksa).");
                     }
                     showNotification(`Kesaksian Saksi ${id} Terekam`, "success");
                     renderWitnesses(); // Refresh UI State
@@ -1898,7 +2204,7 @@
             `).join('');
 
             document.getElementById('duel-modal').classList.remove('hidden');
-            startTimer('duel-timer', 60, closeDuel);
+            startTimer('duel-timer', 8, closeDuel);
         }
         function closeDuel() { 
             document.getElementById('duel-modal').classList.add('hidden'); 
@@ -1923,7 +2229,9 @@
                 icon.className = "text-7xl mb-4 drop-shadow-[0_0_20px_rgba(0,255,102,0.8)] animate-bounce";
                 text.innerText = "BENAR!";
                 text.className = "text-3xl font-bold font-mono-cyber text-green-400 drop-shadow-md";
-                addClue(1, `duel_${Date.now()}`, "Kuis Pengetahuan", "Bukti Teoritis", "Analisis Teori tervalidasi via kuis.");
+                
+                // Menjelaskan mengapa kuis ini benar (korelasi teori)
+                addClue(1, `duel_${Date.now()}`, "Kuis Pengetahuan", "Bukti Teoritis", "Materi P03 & P04 (Praanggapan & Implikatur): Kemampuan detektif tervalidasi. Bukti ini menunjukkan penguasaan teori dalam membongkar asumsi tersembunyi (praanggapan) dan makna tersirat (implikatur) dari siasat pelaku.");
                 
                 state.quizIndex++; // Hanya bertambah jika jawaban benar
             } else {
@@ -1970,7 +2278,7 @@
             document.getElementById('flashcard-progress-text').innerText = `${state.flashcardIndex + 1}/5`;
 
             document.getElementById('flashcard-modal').classList.remove('hidden');
-            startTimer('flashcard-timer', 80, closeFlashcard);
+            startTimer('flashcard-timer', 10, closeFlashcard);
         }
         function closeFlashcard() { 
             document.getElementById('flashcard-modal').classList.add('hidden'); 
@@ -2044,7 +2352,7 @@
             feedback.classList.remove('hidden');
             feedback.classList.add('flex');
             
-            addClue(2, `audio_${Date.now()}`, "[REKAMAN SUARA VALID: Penjelasan Terekam]", "Analisis Suara", "Penjelasan verbal disetujui oleh sistem AI.");
+            addClue(2, `audio_${Date.now()}`, "[REKAMAN SUARA VALID: Penjelasan Terekam]", "Analisis Suara", "Materi P07 (Tindak Tutur Tak Langsung & Hedging): Analisis suara berhasil mengekstraksi Ilokusi Primer (maksud sebenarnya) yang bersembunyi di balik ujaran deklaratif pelaku. Nada suara memvalidasi adanya unsur paksaan.");
             
             setTimeout(() => {
                 feedback.classList.add('hidden');
@@ -2057,6 +2365,205 @@
                 status.classList.add('text-transparent');
                 status.classList.remove('text-amber-400');
             }, 2000);
+        }
+
+        // --- DECRYPTION / BYPASS FIREWALL LOGIC ---
+        function openDecryption() {
+            if(state.decryptSolved) return showNotification("Firewall sudah dibobol!", "warning");
+            if(state.energy < 1) return showNotification("Energi habis! Baca Jurnal untuk isi ulang.", "error");
+            
+            state.energy--; updateDashboard();
+            
+            const pins = ['1042', '5893', '7391', '4628', '9157'];
+            const themeIndex = (state.activeCaseId - 1) % 5;
+            state.targetPin = pins[themeIndex];
+            state.currentPin = '';
+            state.keywordSolved = false;
+
+            // Merender puzzle kata kunci
+            const puzzle = decryptPuzzles[themeIndex];
+            const wsText = document.getElementById('word-search-text');
+            wsText.innerHTML = puzzle.text.split(' ').map(w => {
+                const cleanWord = w.replace(/[^a-zA-Z]/g, '').toLowerCase();
+                return `<span onclick="checkBypassWord('${cleanWord}', '${puzzle.target}', this)" class="cursor-pointer hover:bg-teal-900/50 hover:text-teal-300 px-1 rounded transition-colors inline-block">${w}</span>`;
+            }).join(' ');
+            
+            // Mengatur visibilitas dan status UI
+            document.getElementById('word-search-section').classList.remove('hidden', 'border-green-500');
+            document.getElementById('word-search-section').classList.add('border-teal-700');
+            
+            document.getElementById('pin-display').classList.add('opacity-30', 'pointer-events-none');
+            document.getElementById('numpad-container').classList.add('opacity-30', 'pointer-events-none');
+            document.getElementById('pin-instruction').innerText = "Tahap 2 (Terkunci): Masukkan 4-digit PIN akses server.";
+
+            updatePinDisplay();
+            renderNumpad();
+
+            if(state.gameMode === 'together') {
+                document.getElementById('decrypt-clue').innerHTML = "Sistem terkunci ganda! Temukan kata sandi pragmatik di teks, atau tanyakan <b>Partner Agen Anda</b> di <i>Team Comms</i>!";
+                document.getElementById('btn-ask-team').classList.remove('hidden');
+                document.getElementById('btn-ask-team').disabled = false;
+            } else {
+                document.getElementById('decrypt-clue').innerHTML = "Temukan dan klik kata kunci yang merujuk pada anomali pragmatik di teks atas untuk membuka gembok PIN.";
+                document.getElementById('btn-ask-team').classList.add('hidden');
+            }
+
+            document.getElementById('decrypt-modal').classList.remove('hidden');
+        }
+
+        // Fungsi baru untuk mengecek kata kunci di Bypass Firewall
+        function checkBypassWord(clicked, target, el) {
+            if(state.keywordSolved) return;
+            
+            if(clicked === target) {
+                state.keywordSolved = true;
+                el.classList.add('bg-teal-600', 'text-white', 'font-bold');
+                el.classList.remove('hover:bg-teal-900/50');
+                
+                const sfx = document.getElementById('sfx-correct');
+                if(sfx) { sfx.currentTime = 0; sfx.play().catch(e=>console.log(e)); }
+                
+                // Buka kunci Numpad
+                document.getElementById('word-search-section').classList.replace('border-teal-700', 'border-green-500');
+                document.getElementById('pin-display').classList.remove('opacity-30', 'pointer-events-none');
+                document.getElementById('numpad-container').classList.remove('opacity-30', 'pointer-events-none');
+                document.getElementById('pin-instruction').innerText = "Tahap 2 (Terbuka): Masukkan 4-digit PIN akses server.";
+                
+                document.getElementById('decrypt-clue').innerHTML = `Kata Sandi Diterima! Kode PIN server terekstraksi: <b class="text-green-400 text-lg">${state.targetPin}</b>`;
+                showNotification("Tahap 1 Selesai! Masukkan PIN.", "success");
+            } else {
+                el.classList.add('bg-red-900/50', 'text-red-300');
+                setTimeout(() => el.classList.remove('bg-red-900/50', 'text-red-300'), 800);
+                
+                const sfx = document.getElementById('sfx-wrong');
+                if(sfx) { sfx.currentTime = 0; sfx.play().catch(e=>console.log(e)); }
+            }
+        }
+
+        function closeDecryption() {
+            document.getElementById('decrypt-modal').classList.add('hidden');
+        }
+
+        function updatePinDisplay() {
+            const container = document.getElementById('pin-display');
+            container.innerHTML = Array.from({length: 4}).map((_, i) => `
+                <div class="w-12 h-16 border-2 ${state.currentPin[i] ? 'border-green-400 text-green-400' : 'border-pink-500 text-pink-400'} bg-black flex items-center justify-center text-2xl font-mono-cyber font-bold rounded shadow-inner">
+                    ${state.currentPin[i] || '_'}
+                </div>
+            `).join('');
+        }
+
+        function renderNumpad() {
+            const container = document.getElementById('numpad-container');
+            const nums = [1,2,3,4,5,6,7,8,9,'C',0,'OK'];
+            container.innerHTML = nums.map(n => `
+                <button onclick="pressPin('${n}')" class="glass-panel border border-slate-600 text-slate-300 py-3 rounded hover:bg-pink-900/50 hover:border-pink-500 hover:text-white btn-3d font-mono-cyber text-lg font-bold">${n}</button>
+            `).join('');
+        }
+
+        function pressPin(val) {
+            if(val === 'C') {
+                state.currentPin = '';
+            } else if(val === 'OK') {
+                checkPin();
+                return;
+            } else {
+                if(state.currentPin.length < 4) state.currentPin += val;
+            }
+            updatePinDisplay();
+        }
+
+        function checkPin() {
+            if(state.currentPin.length < 4) return showNotification("Masukkan 4 digit kode!", "warning");
+            
+            const modalContent = document.getElementById('decrypt-modal-content');
+            if(state.currentPin === state.targetPin) {
+                const sfx = document.getElementById('sfx-correct');
+                if(sfx) { sfx.currentTime = 0; sfx.play().catch(e=>console.log(e)); }
+                
+                state.decryptSolved = true;
+                addClue(1, `decrypt_${Date.now()}`, "Akses Log Server (Bypass)", "Bukti Digital", "Materi P04 (Implikatur & Maksim Grice): Data firewall yang didekripsi membuktikan struktur kebohongan sistematis. Pelaku sengaja melanggar Maksim Kualitas (memberikan informasi salah) dan Maksim Kuantitas (menyembunyikan fakta) secara massal.");
+                showNotification("Bypass Berhasil! +1 Bukti Diamankan", "success");
+                closeDecryption();
+                updateDashboard();
+            } else {
+                const sfx = document.getElementById('sfx-wrong');
+                if(sfx) { sfx.currentTime = 0; sfx.play().catch(e=>console.log(e)); }
+                
+                modalContent.classList.add('animate-shake');
+                showNotification("Kode Akses Salah!", "error");
+                state.currentPin = '';
+                updatePinDisplay();
+                setTimeout(() => modalContent.classList.remove('animate-shake'), 500);
+            }
+        }
+
+        function requestTeamClue() {
+            document.getElementById('btn-ask-team').disabled = true;
+            showNotification("Meminta petunjuk ke saluran tim...", "success");
+            
+            setTimeout(() => {
+                const logs = document.getElementById('team-chat-logs');
+                const themeIndex = (state.activeCaseId - 1) % 5;
+                const targetWord = decryptPuzzles[themeIndex].target.toUpperCase();
+
+                logs.innerHTML += `<div class="self-start bg-green-900/30 p-2 rounded-xl rounded-tl-none text-xs text-green-100 max-w-[80%] border border-green-800 shadow-md slide-up"><b>[TEAM_BOT]:</b> Agen, aku berhasil menembus enkripsi pasifnya! Kata yang harus kamu klik adalah <b>${targetWord}</b>. Nanti PIN-nya (<b>${state.targetPin}</b>) akan otomatis muncul!</div>`;
+                logs.scrollTop = logs.scrollHeight;
+                
+                const beep = document.getElementById('walkie-talkie-beep');
+                if (beep) { beep.currentTime = 0; beep.play().catch(e=>console.log(e)); }
+                showNotification("Agen tim mengirim pesan di TEAM COMMS!", "warning");
+            }, 3000);
+        }
+
+        // --- VISUAL ANALYSIS LOGIC ---
+        function openVisualAnalysis() {
+            if(state.visualSolved) return showNotification("Analisis visual di TKP ini sudah diselesaikan!", "warning");
+            if(state.energy < 1) return showNotification("Energi habis! Baca Jurnal untuk isi ulang.", "error");
+            
+            state.energy--; updateDashboard();
+            
+            // Randomize position slightly within the image bounds
+            const target = document.getElementById('hidden-object-target');
+            const topPos = Math.floor(Math.random() * 60) + 15; // 15% to 75%
+            const leftPos = Math.floor(Math.random() * 70) + 10; // 10% to 80%
+            target.style.top = `${topPos}%`;
+            target.style.left = `${leftPos}%`;
+            
+            // Reset state
+            document.getElementById('hidden-object-target').className = "absolute w-12 h-12 rounded-full border-2 border-transparent hover:border-white/50 hover:bg-white/10 transition-colors flex items-center justify-center cursor-pointer z-10";
+            document.getElementById('visual-feedback-overlay').classList.add('hidden');
+            document.getElementById('visual-feedback-overlay').classList.remove('flex');
+
+            document.getElementById('visual-modal').classList.remove('hidden');
+        }
+
+        function closeVisualAnalysis() {
+            document.getElementById('visual-modal').classList.add('hidden');
+        }
+
+        function findHiddenObject() {
+            if(state.visualSolved) return;
+            
+            const sfx = document.getElementById('sfx-correct');
+            if(sfx) { sfx.currentTime = 0; sfx.play().catch(e=>console.log(e)); }
+            
+            const target = document.getElementById('hidden-object-target');
+            target.classList.add('border-teal-400', 'bg-teal-400/50');
+            target.classList.remove('border-transparent');
+            
+            const overlay = document.getElementById('visual-feedback-overlay');
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            
+            state.visualSolved = true;
+            addClue(1, `visual_${Date.now()}`, "Perangkat Keras (Ponsel/Flashdisk)", "Bukti Fisik / Forensik Visual", "Materi P02 & P03: Alat komunikasi fisik ini memuat draf skrip operasional (SOP Penipuan). Di dalamnya terbukti ada perencanaan manipulasi Praanggapan & Deiksis Waktu/Ruang secara terstruktur untuk menjerat korban.");
+            
+            updateDashboard();
+
+            setTimeout(() => {
+                closeVisualAnalysis();
+            }, 2500);
         }
 
         // --- TIMERS ---
